@@ -44,14 +44,14 @@ public sealed class Smn_Rota : SMN_Base
         //单体
         if (Gemshine.CanUse(out act)) return true;
 
-        if (!IsMoving && Configs.GetBool("addCrimsonCyclone") && CrimsonCyclone.CanUse(out act, CanUseOption.MustUse)) return true;
+        if (Configs.GetBool("addCrimsonCyclone") && CrimsonCyclone.CanUse(out act, CanUseOption.MustUse)) return true;
 
         //龙神不死鸟
         if ((Player.HasStatus(false, StatusID.SearingLight) || SearingLight.IsCoolingDown) && SummonBahamut.CanUse(out act)) return true;
         if (!SummonBahamut.EnoughLevel && HasHostilesInRange && AetherCharge.CanUse(out act)) return true;
 
         //毁4
-        if ((Player.HasStatus(true, StatusID.GarudasFavor) || InIfrit)
+        if (IsMoving && (Player.HasStatus(true, StatusID.GarudasFavor) || InIfrit)
             && !Player.HasStatus(true, StatusID.SwiftCast) && !InBahamut && !InPhoenix
             && RuinIV.CanUse(out act, CanUseOption.MustUse)) return true;
 
@@ -103,7 +103,38 @@ public sealed class Smn_Rota : SMN_Base
             //灼热之光
             if (SearingLight.CanUse(out act)) return true;
         }
+        
+        // Adding tincture timing to rotations
+        if((Player.HasStatus(false,StatusID.SearingLight) && InBahamut && SummonBahamut.ElapsedOneChargeAfterGCD(1) ) && (EchoDrops.CanUse(out act))) return true;
+        if((Player.HasStatus(false,StatusID.SearingLight) && InBahamut && SummonBahamut.ElapsedOneChargeAfterGCD(1) ) && (TinctureOfIntelligence8.CanUse(out act))) return true;
+        if((Player.HasStatus(false,StatusID.SearingLight) && InBahamut && SummonBahamut.ElapsedOneChargeAfterGCD(1) ) && (TinctureOfIntelligence7.CanUse(out act))) return true;
+        if((Player.HasStatus(false,StatusID.SearingLight) && InBahamut && SummonBahamut.ElapsedOneChargeAfterGCD(1) ) && (TinctureOfIntelligence6.CanUse(out act))) return true;
 
+        switch (Configs.GetCombo("addSwiftcast"))
+        {
+            default:
+                break;
+            case 1:
+                if (InGaruda)
+                {
+                    if(Swiftcast.CanUse(out act, CanUseOption.MustUse)) return true;
+                }
+                break;
+            case 2:
+                if (InIfrit)
+                {
+                    if (Swiftcast.CanUse(out act, CanUseOption.MustUse)) return true;
+                }
+                break;
+            case 3:
+                if (InGaruda || InIfrit)
+                {
+                    if (Swiftcast.CanUse(out act, CanUseOption.MustUse)) return true;
+                }
+                break;
+        }
+        
+        
         //龙神不死鸟迸发
         if ((InBahamut && SummonBahamut.ElapsedOneChargeAfterGCD(3) || InPhoenix || IsTargetBoss && IsTargetDying) && EnkindleBahamut.CanUse(out act, CanUseOption.MustUse)) return true;
         //死星核爆
@@ -112,52 +143,22 @@ public sealed class Smn_Rota : SMN_Base
         if (Rekindle.CanUse(out act, CanUseOption.MustUse)) return true;
         //山崩
         if (MountainBuster.CanUse(out act, CanUseOption.MustUse)) return true;
-
+        
         //痛苦核爆
-        if ((Player.HasStatus(false, StatusID.SearingLight) && InBahamut && (SummonBahamut.ElapsedOneChargeAfterGCD(3) || !EnergyDrain.IsCoolingDown) ||
+        if ((Player.HasStatus(false, StatusID.SearingLight) && InBahamut && (SummonBahamut.ElapsedOneChargeAfterGCD(4) || (SummonBahamut.ElapsedOneChargeAfterGCD(2) && !EnergyDrain.IsCoolingDown))  ||
             !SearingLight.EnoughLevel || IsTargetBoss && IsTargetDying) && PainFlare.CanUse(out act)) return true;
         //溃烂爆发
-        if ((Player.HasStatus(false, StatusID.SearingLight) && InBahamut && (SummonBahamut.ElapsedOneChargeAfterGCD(3) || !EnergyDrain.IsCoolingDown) ||
+        if ((Player.HasStatus(false, StatusID.SearingLight) && InBahamut && (SummonBahamut.ElapsedOneChargeAfterGCD(4) || (SummonBahamut.ElapsedOneChargeAfterGCD(2) && !EnergyDrain.IsCoolingDown )) ||
             !SearingLight.EnoughLevel || IsTargetBoss && IsTargetDying) && Fester.CanUse(out act)) return true;
 
         //能量抽取
-        if (EnergySiphon.CanUse(out act)) return true;
+        if (AetherCharge.CurrentCharges==0 && EnergySiphon.CanUse(out act)) return true;
         //能量吸收
-        if (EnergyDrain.CanUse(out act)) return true;
+        if (AetherCharge.CurrentCharges==0 && EnergyDrain.CanUse(out act)) return true;
+        
 
         return false;
     }
-    protected override bool EmergencyAbility(IAction nextGCD, out IAction act)
-    {
-        //即刻进循环
-        switch (Configs.GetCombo("addSwiftcast"))
-        {
-            default:
-                break;
-            case 1:
-                if (nextGCD.IsTheSameTo(true, Slipstream) || Attunement == 0 && Player.HasStatus(true, StatusID.GarudasFavor))
-                {
-                    if (Swiftcast.CanUse(out act, CanUseOption.MustUse)) return true;
-                }
-                break;
-            case 2:
-                if (InIfrit && (nextGCD.IsTheSameTo(true, Gemshine, PreciousBrilliance) || IsMoving))
-                {
-                    if (Swiftcast.CanUse(out act, CanUseOption.MustUse)) return true;
-                }
-                break;
-
-            case 3:
-                if (nextGCD.IsTheSameTo(true, Slipstream) || Attunement == 0 && Player.HasStatus(true, StatusID.GarudasFavor) ||
-                   InIfrit && (nextGCD.IsTheSameTo(true, Gemshine, PreciousBrilliance) || IsMoving))
-                {
-                    if (Swiftcast.CanUse(out act, CanUseOption.MustUse)) return true;
-                }
-                break;
-        }
-        return base.EmergencyAbility(nextGCD, out act);
-    }
-
     protected override IAction CountDownAction(float remainTime)
     {
         if (SummonCarbuncle.CanUse(out _)) return SummonCarbuncle;
