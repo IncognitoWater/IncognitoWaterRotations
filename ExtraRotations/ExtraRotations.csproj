@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<ItemGroup>
+	  <Folder Include="Healer\" />
+	  <Folder Include="Melee\" />
+	  <Folder Include="Tank\" />
+	  <Folder Include="Ranged\" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="RotationSolver.Basic" Version="2.10.2" />
+	</ItemGroup>
+</Project>
