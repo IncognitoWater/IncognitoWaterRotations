@@ -1,0 +1,12 @@
+C:\GitHub\FFRS-IncognitoWaterRotations\IcWaRotations\bin\Release\net7.0-windows\IcWaRotations.deps.json
+C:\GitHub\FFRS-IncognitoWaterRotations\IcWaRotations\bin\Release\net7.0-windows\IcWaRotations.dll
+C:\GitHub\FFRS-IncognitoWaterRotations\IcWaRotations\bin\Release\net7.0-windows\IcWaRotations.pdb
+C:\GitHub\FFRS-IncognitoWaterRotations\IcWaRotations\obj\Release\net7.0-windows\IcWaRotations.csproj.AssemblyReference.cache
+C:\GitHub\FFRS-IncognitoWaterRotations\IcWaRotations\obj\Release\net7.0-windows\IcWaRotations.GeneratedMSBuildEditorConfig.editorconfig
+C:\GitHub\FFRS-IncognitoWaterRotations\IcWaRotations\obj\Release\net7.0-windows\IcWaRotations.AssemblyInfoInputs.cache
+C:\GitHub\FFRS-IncognitoWaterRotations\IcWaRotations\obj\Release\net7.0-windows\IcWaRotations.AssemblyInfo.cs
+C:\GitHub\FFRS-IncognitoWaterRotations\IcWaRotations\obj\Release\net7.0-windows\IcWaRotations.csproj.CoreCompileInputs.cache
+C:\GitHub\FFRS-IncognitoWaterRotations\IcWaRotations\obj\Release\net7.0-windows\IcWaRotations.dll
+C:\GitHub\FFRS-IncognitoWaterRotations\IcWaRotations\obj\Release\net7.0-windows\refint\IcWaRotations.dll
+C:\GitHub\FFRS-IncognitoWaterRotations\IcWaRotations\obj\Release\net7.0-windows\IcWaRotations.pdb
+C:\GitHub\FFRS-IncognitoWaterRotations\IcWaRotations\obj\Release\net7.0-windows\ref\IcWaRotations.dll
