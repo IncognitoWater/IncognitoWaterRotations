@@ -31,8 +31,8 @@ public sealed class Smn_Rota : SMN_Base
 
     protected override bool GeneralGCD(out IAction act)
     {
-        //宝石兽召唤
-        if (SummonCarbuncle.CanUse(out act)) return true;
+        //Spawning carbuncle + attempting to avoid unwanted try of spawning carbuncle
+        if (!InBahamut && !InPhoenix && !InGaruda && !InIfrit && !InTitan && SummonCarbuncle.CanUse(out act)) return true;
 
         //风神读条
         if (Slipstream.CanUse(out act, CanUseOption.MustUse)) return true;
