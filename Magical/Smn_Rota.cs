@@ -2,7 +2,7 @@
 
 [RotationDesc(ActionID.SearingLight)]
 [SourceCode("https://github.com/IncognitoWater/IncognitoWaterRotations/blob/main/IcWaRotations/Magical/Smn_Rota.cs")]
-public sealed class Smn_Rota : SMN_Base
+public sealed class SmnRotation : SMN_Base
 {
     public override string GameVersion => "6.4";
 
