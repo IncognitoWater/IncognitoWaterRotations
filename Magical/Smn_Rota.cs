@@ -102,10 +102,6 @@ public sealed class SmnRotation : SMN_Base
             //灼热之光
             if (SearingLight.CanUse(out act)) return true;
         }
-        
-        // Adding tincture timing to rotations
-        if((Player.HasStatus(false,StatusID.SearingLight) && InBahamut) && (UseBurstMedicine(out act))) return true;
-        if((Player.HasStatus(false,StatusID.SearingLight) && InBahamut) && (EchoDrops.CanUse(out act))) return true;
 
         switch (Configs.GetCombo("addSwiftcast"))
         {
@@ -156,6 +152,17 @@ public sealed class SmnRotation : SMN_Base
 
         return false;
     }
+
+    protected override bool EmergencyAbility(IAction nextGCD, out IAction act)
+    {
+                
+        // Adding tincture timing to rotations
+        if((Player.HasStatus(false,StatusID.SearingLight) && InBahamut) && (UseBurstMedicine(out act))) return true;
+        if((Player.HasStatus(false,StatusID.SearingLight) && InBahamut) && (EchoDrops.CanUse(out act))) return true;
+        
+        return base.EmergencyAbility(nextGCD, out act);
+    }
+
     protected override IAction CountDownAction(float remainTime)
     {
         if (SummonCarbuncle.CanUse(out _)) return SummonCarbuncle;
