@@ -167,7 +167,7 @@ public sealed class SmnRotation : SMN_Base
     {
         if (SummonCarbuncle.CanUse(out _)) return SummonCarbuncle;
         //1.5s预读毁3
-        if (remainTime <= Ruin.CastTime + Service.Config.CountDownAhead
+        if (remainTime <= Ruin.CastTime + CountDownAhead
             && Ruin.CanUse(out _)) return Ruin;
         return base.CountDownAction(remainTime);
     }
