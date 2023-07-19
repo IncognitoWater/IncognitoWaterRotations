@@ -138,10 +138,10 @@ public sealed class SmnRotation : SMN_Base
         if (MountainBuster.CanUse(out act, CanUseOption.MustUse)) return true;
         
         //痛苦核爆
-        if ((Player.HasStatus(false, StatusID.SearingLight) && InBahamut && (SummonBahamut.ElapsedOneChargeAfterGCD(4) || !EnergyDrain.IsCoolingDown && SummonBahamut.ElapsedOneChargeAfterGCD(1)) ||
+        if ((Player.HasStatus(false, StatusID.SearingLight) && InBahamut && (SummonBahamut.ElapsedOneChargeAfterGCD(4) || ((!EnergyDrain.IsCoolingDown  || EnergyDrain.ElapsedAfter(50))) && SummonBahamut.ElapsedOneChargeAfterGCD(1)) ||
             !SearingLight.EnoughLevel || IsTargetBoss && IsTargetDying) && PainFlare.CanUse(out act)) return true;
         //溃烂爆发
-        if ((Player.HasStatus(false, StatusID.SearingLight) && InBahamut && (SummonBahamut.ElapsedOneChargeAfterGCD(4) || !EnergyDrain.IsCoolingDown && SummonBahamut.ElapsedOneChargeAfterGCD(1)) ||
+        if ((Player.HasStatus(false, StatusID.SearingLight) && InBahamut && (SummonBahamut.ElapsedOneChargeAfterGCD(4) || ((!EnergyDrain.IsCoolingDown  || EnergyDrain.ElapsedAfter(50))) && SummonBahamut.ElapsedOneChargeAfterGCD(1)) ||
             !SearingLight.EnoughLevel || IsTargetBoss && IsTargetDying) && Fester.CanUse(out act)) return true;
 
         //能量抽取
