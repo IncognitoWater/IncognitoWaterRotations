@@ -1,7 +1,7 @@
 ﻿namespace IcWaRotations.Magical;
 
 [RotationDesc(ActionID.SearingLight)]
-[SourceCode("https://github.com/IncognitoWater/IncognitoWaterRotations/blob/main/IcWaRotations/Magical/Smn_Rota.cs")]
+[LinkDescription("https://github.com/IncognitoWater/IncognitoWaterRotations/blob/main/IcWaRotations/Magical/Smn_Rota.cs")]
 public sealed class SmnRotation : SMN_Base
 {
     public override string GameVersion => "6.4";
@@ -18,7 +18,7 @@ public sealed class SmnRotation : SMN_Base
             .SetBool("addCrimsonCyclone", true, "Use Crimson Cyclone");
     }
 
-    protected override bool CanHealSingleSpell => false;
+    public override bool CanHealSingleSpell => false;
 
     [RotationDesc(ActionID.CrimsonCyclone)]
     protected override bool MoveForwardGCD(out IAction act)
