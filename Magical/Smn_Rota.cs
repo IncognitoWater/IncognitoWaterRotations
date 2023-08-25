@@ -1,21 +1,22 @@
 ﻿namespace IcWaRotations.Magical;
 
 [RotationDesc(ActionID.SearingLight)]
-[LinkDescription("https://github.com/IncognitoWater/IncognitoWaterRotations/blob/main/IcWaRotations/Magical/Smn_Rota.cs")]
+[LinkDescription("https://github.com/IncognitoWater/IncognitoWaterRotations/blob/main/Magical/Smn_Rota.cs")]
 public sealed class SmnRotation : SMN_Base
 {
-    public override string GameVersion => "6.4";
+    public override string GameVersion => "6.48";
 
     public override string RotationName => "IncognitoWater's Summoner";
 
-    public override string Description => "Trying to make something more high level duty wise";
+    public override string Description => "High Level Content Summoner Rotation";
 
     protected override IRotationConfigSet CreateConfiguration()
     {
         return base.CreateConfiguration()
-            .SetCombo("addSwiftcast", 0, "Use Swiftcast", "No", "Emerald", "Ruby", "All")
-            .SetCombo("SummonOrder", 0, "Order", "Topaz-Emerald-Ruby", "Topaz-Ruby-Emerald", "Emerald-Topaz-Ruby")
-            .SetBool("addCrimsonCyclone", true, "Use Crimson Cyclone");
+            .SetCombo("addSwiftcast", 0, "Use Swiftcast With", "No", "Emerald", "Ruby", "All")
+            .SetCombo("SummonOrder", 0, "Invocation Order", "Topaz-Emerald-Ruby", "Topaz-Ruby-Emerald", "Emerald-Topaz-Ruby")
+            .SetBool("addCrimsonCyclone", true, "Use Crimson Cyclone")
+            .SetBool("RadiantOnCooldown", false, "Use Radiant On Cooldown");
     }
 
     public override bool CanHealSingleSpell => false;
@@ -100,31 +101,7 @@ public sealed class SmnRotation : SMN_Base
         if (InBurst && !Player.HasStatus(false, StatusID.SearingLight))
         {
             //灼热之光
-            if (SearingLight.CanUse(out act)) return true;
-        }
-
-        switch (Configs.GetCombo("addSwiftcast"))
-        {
-            default:
-                break;
-            case 1:
-                if (InGaruda)
-                {
-                    if(Swiftcast.CanUse(out act, CanUseOption.MustUse)) return true;
-                }
-                break;
-            case 2:
-                if (InIfrit)
-                {
-                    if (Swiftcast.CanUse(out act, CanUseOption.MustUse)) return true;
-                }
-                break;
-            case 3:
-                if (InGaruda || InIfrit)
-                {
-                    if (Swiftcast.CanUse(out act, CanUseOption.MustUse)) return true;
-                }
-                break;
+            if (SearingLight.CanUse(out act, CanUseOption.MustUse)) return true;
         }
         
         
@@ -132,8 +109,8 @@ public sealed class SmnRotation : SMN_Base
         if ((InBahamut && SummonBahamut.ElapsedOneChargeAfterGCD(3) || InPhoenix || IsTargetBoss && IsTargetDying) && EnkindleBahamut.CanUse(out act, CanUseOption.MustUse)) return true;
         //死星核爆
         if ((InBahamut && SummonBahamut.ElapsedOneChargeAfterGCD(3) || IsTargetBoss && IsTargetDying) && DeathFlare.CanUse(out act, CanUseOption.MustUse)) return true;
-        //苏生之炎
-        if (Rekindle.CanUse(out act, CanUseOption.MustUse)) return true;
+        //Change rekindle timing to avoid triple weaving issue if animation are unlocked
+        if (InPhoenix && SummonBahamut.ElapsedOneChargeAfterGCD(1) && Rekindle.CanUse(out act, CanUseOption.MustUse)) return true;
         //山崩
         if (MountainBuster.CanUse(out act, CanUseOption.MustUse)) return true;
         
@@ -157,9 +134,35 @@ public sealed class SmnRotation : SMN_Base
     {
                 
         // Adding tincture timing to rotations
-        if((Player.HasStatus(false,StatusID.SearingLight) && InBahamut) && (UseBurstMedicine(out act))) return true;
-        if((Player.HasStatus(false,StatusID.SearingLight) && InBahamut) && (EchoDrops.CanUse(out act))) return true;
+        if(((SearingLight.IsInCooldown || Player.HasStatus(false,StatusID.SearingLight)) && InBahamut) && (UseBurstMedicine(out act))) return true;
         
+        // moved swift usage on emergency to avoid unsended swift
+        switch (Configs.GetCombo("addSwiftcast"))
+        {
+            default:
+                break;
+            case 1:
+                if (InGaruda)
+                {
+                    if(Swiftcast.CanUse(out act, CanUseOption.MustUse)) return true;
+                }
+                break;
+            case 2:
+                if (InIfrit)
+                {
+                    if (Swiftcast.CanUse(out act, CanUseOption.MustUse)) return true;
+                }
+                break;
+            case 3:
+                if (InGaruda || InIfrit)
+                {
+                    if (Swiftcast.CanUse(out act, CanUseOption.MustUse)) return true;
+                }
+                break;
+        }
+
+        if (Configs.GetBool("RadiantOnCooldown") && (RadiantAegis.CurrentCharges == 2) && SummonBahamut.IsCoolingDown && RadiantAegis.CanUse(out act, CanUseOption.MustUse)) return true;
+
         return base.EmergencyAbility(nextGCD, out act);
     }
 
