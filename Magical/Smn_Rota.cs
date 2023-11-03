@@ -106,9 +106,9 @@ public sealed class SmnRotation : SMN_Base
         
         
         //Burst for bahamut
-        if ((InBahamut && SummonBahamut.ElapsedOneChargeAfterGCD(3) || InPhoenix || IsTargetBoss && IsTargetDying) && EnkindleBahamut.CanUse(out act, CanUseOption.MustUse)) return true;
+        if ((InBahamut && SummonBahamut.ElapsedOneChargeAfterGCD(3) || InPhoenix) && EnkindleBahamut.CanUse(out act, CanUseOption.MustUse)) return true;
         //Burst second part for bahamut
-        if ((InBahamut && SummonBahamut.ElapsedOneChargeAfterGCD(3) || IsTargetBoss && IsTargetDying) && DeathFlare.CanUse(out act, CanUseOption.MustUse)) return true;
+        if ((InBahamut && SummonBahamut.ElapsedOneChargeAfterGCD(3)) && DeathFlare.CanUse(out act, CanUseOption.MustUse)) return true;
         //Change rekindle timing to avoid triple weaving issue if animation are unlocked
         if (InPhoenix && SummonBahamut.ElapsedOneChargeAfterGCD(1) && Rekindle.CanUse(out act, CanUseOption.MustUse)) return true;
         //Special Titan
@@ -116,10 +116,10 @@ public sealed class SmnRotation : SMN_Base
         
         //Painflare timing for tincture and rotation
         if ((Player.HasStatus(false, StatusID.SearingLight) && InBahamut && (SummonBahamut.ElapsedOneChargeAfterGCD(4) || ((!EnergyDrain.IsCoolingDown  || EnergyDrain.ElapsedAfter(50))) && SummonBahamut.ElapsedOneChargeAfterGCD(1)) ||
-            !SearingLight.EnoughLevel || IsTargetBoss && IsTargetDying) && PainFlare.CanUse(out act)) return true;
+            !SearingLight.EnoughLevel ) && PainFlare.CanUse(out act)) return true;
         //fester timing for tincture and rotation
         if ((Player.HasStatus(false, StatusID.SearingLight) && InBahamut && (SummonBahamut.ElapsedOneChargeAfterGCD(4) || ((!EnergyDrain.IsCoolingDown  || EnergyDrain.ElapsedAfter(50))) && SummonBahamut.ElapsedOneChargeAfterGCD(1)) ||
-            !SearingLight.EnoughLevel || IsTargetBoss && IsTargetDying) && Fester.CanUse(out act)) return true;
+            !SearingLight.EnoughLevel) && Fester.CanUse(out act)) return true;
 
         //energy siphon recharge
         if (AetherCharge.CurrentCharges==0 && EnergySiphon.CanUse(out act)) return true;
