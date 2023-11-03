@@ -14,17 +14,19 @@ public sealed class MchRotation : MCH_Base
             if (AirAnchor.CanUse(out var act1)) return act1;
             else if (!AirAnchor.EnoughLevel && HotShot.CanUse(out act1)) return act1;
         }
+
         if (remainTime < 2 && UseBurstMedicine(out var act)) return act;
-        if (remainTime < 5 && Reassemble.CanUse(out act, CanUseOption.EmptyOrSkipCombo | CanUseOption.IgnoreClippingCheck)) return act;
+        if (remainTime < 5 &&
+            Reassemble.CanUse(out act, CanUseOption.EmptyOrSkipCombo | CanUseOption.IgnoreClippingCheck)) return act;
         return base.CountDownAction(remainTime);
     }
-    
+
     protected override IRotationConfigSet CreateConfiguration()
     {
         return base.CreateConfiguration()
             .SetBool("MCH_Reassemble", true, "Use Reassamble with ChainSaw");
     }
-    
+
     protected override bool GeneralGCD(out IAction act)
     {
         //Overheated
@@ -32,13 +34,21 @@ public sealed class MchRotation : MCH_Base
         if (HeatBlast.CanUse(out act)) return true;
 
         //Long Cds
-        if (BioBlaster.CanUse(out act)) return true;
+
+        if (NumberOfHostilesInMaxRange > 2 && BioBlaster.EnoughLevel)
+        {
+            if (BioBlaster.CanUse(out act)) return true;
+        }
+        else
+        {
+            if (Drill.CanUse(out act)) return true;
+        }
+
+
         if (!SpreadShot.CanUse(out _))
         {
             if (AirAnchor.CanUse(out act)) return true;
             else if (!AirAnchor.EnoughLevel && HotShot.CanUse(out act)) return true;
-
-            if (Drill.CanUse(out act)) return true;
         }
 
         if (!CombatElapsedLessGCD(4) && ChainSaw.CanUse(out act, CanUseOption.MustUse)) return true;
@@ -59,16 +69,18 @@ public sealed class MchRotation : MCH_Base
     {
         if (Configs.GetBool("MCH_Reassemble") && ChainSaw.EnoughLevel && nextGCD.IsTheSameTo(true, ChainSaw))
         {
-            if (Reassemble.CanUse(out act, CanUseOption.EmptyOrSkipCombo)) return true;
+            if (CanUseReassemble(out act)) return true;
         }
+
         if (Ricochet.CanUse(out act, CanUseOption.MustUse)) return true;
         if (GaussRound.CanUse(out act, CanUseOption.MustUse)) return true;
 
         if (!Drill.EnoughLevel && nextGCD.IsTheSameTo(true, CleanShot)
             || nextGCD.IsTheSameTo(false, AirAnchor, ChainSaw, Drill))
         {
-            if (Reassemble.CanUse(out act, CanUseOption.EmptyOrSkipCombo)) return true;
+            if (CanUseReassemble(out act)) return true;
         }
+
         return base.EmergencyAbility(nextGCD, out act);
     }
 
@@ -78,7 +90,8 @@ public sealed class MchRotation : MCH_Base
         {
             if (UseBurstMedicine(out act)) return true;
             if ((IsLastAbility(false, Hypercharge) || Heat >= 50) && !CombatElapsedLess(10)
-                && Wildfire.CanUse(out act, CanUseOption.OnLastAbility)) return true;
+                                                                  && Wildfire.CanUse(out act,
+                                                                      CanUseOption.OnLastAbility)) return true;
         }
 
         if (!CombatElapsedLess(12) && CanUseHypercharge(out act)) return true;
@@ -93,20 +106,22 @@ public sealed class MchRotation : MCH_Base
         {
             if (Ricochet.CanUse(out act, option)) return true;
         }
+
         if (GaussRound.CanUse(out act, option)) return true;
 
         return base.AttackAbility(out act);
     }
 
-    private static bool AirAnchorBlockTime(float time)
+    private bool CanUseReassemble(out IAction act)
     {
-        if (AirAnchor.EnoughLevel)
+        act = null;
+        if (Target.IsBoss() && !Target.IsDying())
         {
-            return AirAnchor.IsCoolingDown && AirAnchor.WillHaveOneCharge(time);
+            return Reassemble.CanUse(out act);
         }
         else
         {
-            return HotShot.IsCoolingDown && HotShot.WillHaveOneCharge(time);
+            return false;
         }
     }
 
@@ -122,24 +137,31 @@ public sealed class MchRotation : MCH_Base
             if (!HotShot.IsCoolingDown || HotShot.ElapsedAfter(18)) return false;
         }
 
+        if (!(Target.IsBoss() && Battery > 90))
+        {
+            return false;
+        }
+
+        if (!(Target.IsBoss() && Target.IsDying()))
+        {
+            return false;
+        }
+
+
         return RookAutoturret.CanUse(out act);
     }
 
     const float REST_TIME = 6f;
+
     private static bool CanUseHypercharge(out IAction act)
     {
         act = null;
 
-        //if (BarrelStabilizer.IsCoolingDown && BarrelStabilizer.WillHaveOneChargeGCD(8))
-        //{
-        //    if (AirAnchorBlockTime(8)) return false;
-        //}
-        //else
-        //{
-        //    if (AirAnchorBlockTime(12)) return false;
-        //}
-
-        //Check recast.
+        if (NumberOfHostilesInMaxRange > 2 && AutoCrossbow.EnoughLevel)
+        {
+            return false;
+        }
+        
         if (!SpreadShot.CanUse(out _))
         {
             if (AirAnchor.EnoughLevel)
@@ -151,6 +173,7 @@ public sealed class MchRotation : MCH_Base
                 if (HotShot.EnoughLevel && HotShot.WillHaveOneCharge(REST_TIME)) return false;
             }
         }
+
         if (Drill.EnoughLevel && Drill.WillHaveOneCharge(REST_TIME)) return false;
         if (ChainSaw.EnoughLevel && ChainSaw.WillHaveOneCharge(REST_TIME)) return false;
 
