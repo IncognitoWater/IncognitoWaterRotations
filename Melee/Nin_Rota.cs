@@ -77,7 +77,7 @@ public sealed class NinRotation : NIN_Base
         if (_ninActionAim != null && WeaponRemain < 0.2) return false;
 
         //Kassatsu
-        if (Player.HasStatus(true, StatusID.Ninjutsu))
+        if (Player.HasStatus(true, StatusID.Kassatsu))
         {
             if (GokaMekkyaku.CanUse(out _))
             {
