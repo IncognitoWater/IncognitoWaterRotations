@@ -6,6 +6,9 @@ public sealed class MchRotation : MCH_Base
     public override string GameVersion => "6.51";
 
     public override string RotationName => "Icognito's Mch";
+    
+    public override string Description => "Should be a delayed tools rotation with Unavailable's conditions ";
+
 
     protected override IAction CountDownAction(float remainTime)
     {
@@ -115,7 +118,7 @@ public sealed class MchRotation : MCH_Base
     private bool CanUseReassemble(out IAction act)
     {
         act = null;
-        if (Target.IsBoss() && !Target.IsDying())
+        if (HostileTarget.IsBoss() && !HostileTarget.IsDying())
         {
             return Reassemble.CanUse(out act);
         }
@@ -137,12 +140,12 @@ public sealed class MchRotation : MCH_Base
             if (!HotShot.IsCoolingDown || HotShot.ElapsedAfter(18)) return false;
         }
 
-        if (!(Target.IsBoss() && Battery > 90))
+        if (!(HostileTarget.IsBoss() && Battery > 90))
         {
             return false;
         }
 
-        if (!(Target.IsBoss() && Target.IsDying()))
+        if (!(HostileTarget.IsBoss() && HostileTarget.IsDying()))
         {
             return false;
         }

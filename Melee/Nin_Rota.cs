@@ -6,6 +6,9 @@ public sealed class NinRotation : NIN_Base
     public override string GameVersion => "6.51";
 
     public override string RotationName => "Incognito's Nin";
+    
+    public override string Description => "Ninja rotation close to the original one";
+
 
     private static INinAction _ninActionAim;
     private static bool InTrickAttack => TrickAttack.IsCoolingDown && !TrickAttack.ElapsedAfter(17);
