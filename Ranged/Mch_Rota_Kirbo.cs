@@ -31,9 +31,6 @@ public class MchRotationKirbo : MCH_Base
 	private bool OpenerInProgress { get; set; }
 
 
-	private bool SafeToUseWildfire { get; } = false;
-
-
 	private bool WillhaveTool { get; set; }
 
 	private bool Flag { get; set; }
@@ -525,10 +522,9 @@ public class MchRotationKirbo : MCH_Base
 		}
 		if (Deepdungeon || Eureka || Roulette || Dungeon || VCDungeonFinder || FATEs || Player.Level < 90)
 		{
-			if (Wildfire.CanUse(out act) && HostileTarget.IsBoss() && SafeToUseWildfire)
-			{
-				return true;
-			}
+			if ((IsLastAbility(false, Hypercharge) || Heat >= 50) && HostileTarget.IsBoss()
+				&& Wildfire.CanUse(out act, CanUseOption.OnLastAbility)) return true;
+			
 			if (Reassemble.CurrentCharges > 0 && Reassemble.CanUse(out act, (CanUseOption)3))
 			{
 				if (ChainSaw.EnoughLevel && (nextGCD == ChainSaw || nextGCD == Drill || nextGCD == AirAnchor))
