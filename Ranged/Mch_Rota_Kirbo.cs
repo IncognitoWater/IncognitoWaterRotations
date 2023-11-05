@@ -7,9 +7,9 @@ public class MchRotationKirbo : MCH_Base
 
 	public override string GameVersion => "6.51";
 
-	public override string RotationName => "Kirbo's Machinist Delayed Tools";
+	public override string RotationName => "Kirbo's Machinist + PVP";
 
-	public override string Description => "Kirbo's Machinist, just updated some things code wise, can only do delayed tools. \n Should be optimised for Boss Level 90 content with 2.5 GCD.";
+	public override string Description => "Kirbo's Machinist, just updated some things code wise, Do Delayed Tools and Early AA. \n Should be optimised for Boss Level 90 content with 2.5 GCD.";
 
 	private bool InBurst { get; set; }
 
@@ -310,13 +310,10 @@ public class MchRotationKirbo : MCH_Base
 			{
 				if (PvP_ChainSaw.CanUse(out act, CanUseOption.MustUseEmpty)) return true;
 			}
-			else
-			{
-				if (PvP_Scattergun.CanUse(out act, CanUseOption.MustUseEmpty)) return true;
-			}
 		}
 
-		if (PvP_BlastCharge.CanUse(out act)) return true;
+		if (PvP_Scattergun.CanUse(out act, CanUseOption.MustUseEmpty)) return true;
+		if (PvP_BlastCharge.CanUse(out act,CanUseOption.IgnoreCastCheck)) return true;
 		#endregion
 
 		#region PVE
@@ -375,13 +372,13 @@ public class MchRotationKirbo : MCH_Base
 		return false;
 		#endregion
 	}
-
+	
 
 	protected override bool EmergencyAbility(IAction nextGCD, out IAction act)
 	{
 		#region PvP
 		act = null;
-
+		
 		if (Player.HasStatus(true, StatusID.PvP_Overheat) && PvP_Wildfire.CanUse(out act, CanUseOption.MustUse)) return true;
 
 		if ((nextGCD.IsTheSameTo(ActionID.PvP_Drill) || nextGCD.IsTheSameTo(ActionID.PvP_Bioblaster) && NumberOfHostilesInRange > 2 || nextGCD.IsTheSameTo(ActionID.PvP_AirAnchor)) &&
