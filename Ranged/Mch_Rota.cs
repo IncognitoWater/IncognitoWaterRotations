@@ -5,7 +5,7 @@ public sealed class MchRotation : MCH_Base
 {
     public override string GameVersion => "6.51";
 
-    public override string RotationName => "Icognito's Mch";
+    public override string RotationName => "Incognito's Mch";
     
     public override string Description => "Should be a delayed tools rotation with Unavailable's conditions ";
 
@@ -27,7 +27,8 @@ public sealed class MchRotation : MCH_Base
     protected override IRotationConfigSet CreateConfiguration()
     {
         return base.CreateConfiguration()
-            .SetBool("MCH_Reassemble", true, "Use Reassamble with ChainSaw");
+            .SetBool("MCH_Reassemble", true, "Use Reassamble with ChainSaw")
+            .SetBool("Mch_Queen", false, "Force using Queen if 100");
     }
 
     protected override bool GeneralGCD(out IAction act)
@@ -131,6 +132,10 @@ public sealed class MchRotation : MCH_Base
     private bool CanUseRookAutoturret(out IAction act)
     {
         act = null;
+        if (Configs.GetBool("Mch_Queen") && Battery == 100)
+        {
+            return RookAutoturret.CanUse(out act);
+        }
         if (AirAnchor.EnoughLevel)
         {
             if (!AirAnchor.IsCoolingDown || AirAnchor.ElapsedAfter(18)) return false;
@@ -149,7 +154,6 @@ public sealed class MchRotation : MCH_Base
         {
             return false;
         }
-
 
         return RookAutoturret.CanUse(out act);
     }
