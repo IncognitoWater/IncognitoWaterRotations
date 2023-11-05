@@ -298,7 +298,7 @@ public class MchRotationKirbo : MCH_Base
 			{
 				if (PvP_Drill.CanUse(out act, CanUseOption.MustUseEmpty)) return true;
 			}
-			else if (Player.HasStatus(true, StatusID.PvP_BioblasterPrimed))
+			else if (Player.HasStatus(true, StatusID.PvP_BioblasterPrimed) && HostileTarget && HostileTarget.DistanceToPlayer() < 12)
 			{
 				if (PvP_Bioblaster.CanUse(out act, CanUseOption.MustUseEmpty)) return true;
 			}
