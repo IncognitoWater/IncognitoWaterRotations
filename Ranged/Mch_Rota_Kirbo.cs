@@ -42,24 +42,49 @@ public class MchRotationKirbo : MCH_Base
 	protected override IRotationConfigSet CreateConfiguration()
 	{
 		return base.CreateConfiguration()
+			.SetCombo("RotationSelection", 1, "Select which Rotation will be used. (Openers will only be followed at level 90)", new string[2] { "Early AA", "Delayed Tools" })
 			.SetBool("BatteryStuck", false, "Battery overcap protection\n(Will try and use Rook AutoTurret if Battery is at 100 and next skill increases Battery)")
 			.SetBool("HeatStuck", false, "Heat overcap protection\n(Will try and use HyperCharge if Heat is at 100 and next skill increases Heat)")
-			.SetBool("DumpSkills", true, "Dump Skills when Target is dying\n(Will try and spend remaining resources before boss dies)");
+			.SetBool("DumpSkills", true, "Dump Skills when Target is dying\n(Will try and spend remaining resources before boss dies)")
+			.SetBool("LBInPvP", true, "Use the LB in PvP when Target is killable by it");
 	}
 
 	protected override IAction CountDownAction(float remainTime)
 	{
 		if (OpenerActionsAvailable)
 		{
-			if (remainTime <= SplitShot.AnimationLockTime && SplitShot.CanUse(out _))
+			switch (Configs.GetCombo("RotationSelection")) // Select CountDownAction Depending on which Rotation will be used
 			{
-				OpenerInProgress = true;
-				return SplitShot;
-			}
-			IAction act1;
-			if (remainTime <= SplitShot.AnimationLockTime + TinctureOfDexterity8.AnimationLockTime + 0.2 && UseBurstMedicine(out act1, false))
-			{
-				return act1;
+			
+			case 0: // Early AA
+				if (remainTime <= AirAnchor.AnimationLockTime && Player.HasStatus(true,StatusID.Reassemble) && AirAnchor.CanUse(out _))
+				{
+					OpenerInProgress = true;
+					return AirAnchor;
+				}
+				IAction act0;
+				if (remainTime <= TinctureOfDexterity8.AnimationLockTime + AirAnchor.AnimationLockTime && UseBurstMedicine(out act0, false))
+				{
+					return act0;
+				}
+				if (remainTime <= 5f && Reassemble.CurrentCharges > 1)
+				{
+					return Reassemble;
+				}
+				break;
+			
+			case 1: // Delayed Tools
+				if (remainTime <= SplitShot.AnimationLockTime && SplitShot.CanUse(out _))
+				{
+					OpenerInProgress = true;
+					return SplitShot;
+				}
+				IAction act1;
+				if (remainTime <= SplitShot.AnimationLockTime + TinctureOfDexterity8.AnimationLockTime + 0.2 && UseBurstMedicine(out act1, false))
+				{
+					return act1;
+				}
+				break;
 			}
 		}
 		if (Player.Level < 90)
@@ -114,7 +139,74 @@ public class MchRotationKirbo : MCH_Base
 				// PluginLog.Debug("opener is no longer in progress", Array.Empty<object>());
 				Flag = true;
 			}
-			switch (Openerstep)
+			switch (Configs.GetCombo("RotationSelection"))
+			{
+				case 0: //Early AA
+					switch (Openerstep)
+				{
+				case 0:
+					return OpenerStep(IsLastGCD(false, (IAction[])(object)new IAction[1] { (IAction)MCH_Base.AirAnchor }), MCH_Base.AirAnchor.CanUse(out act, (CanUseOption)1));
+				case 1:
+					return OpenerStep(IsLastAbility(false, (IAction[])(object)new IAction[1] { (IAction)MCH_Base.GaussRound }), MCH_Base.GaussRound.CanUse(out act, (CanUseOption)3));
+				case 2:
+					return OpenerStep(IsLastAbility(false, (IAction[])(object)new IAction[1] { (IAction)MCH_Base.Ricochet }), MCH_Base.Ricochet.CanUse(out act, (CanUseOption)3));
+				case 3:
+					return OpenerStep(IsLastGCD(false, (IAction[])(object)new IAction[1] { (IAction)MCH_Base.Drill }), MCH_Base.Drill.CanUse(out act, (CanUseOption)1));
+				case 4:
+					return OpenerStep(IsLastAbility(false, (IAction[])(object)new IAction[1] { (IAction)MCH_Base.BarrelStabilizer }), MCH_Base.BarrelStabilizer.CanUse(out act, (CanUseOption)1));
+				case 5:
+					return OpenerStep(IsLastGCD(true, (IAction[])(object)new IAction[1] { (IAction)MCH_Base.SplitShot }), MCH_Base.SplitShot.CanUse(out act, (CanUseOption)1));
+				case 6:
+					return OpenerStep(IsLastAbility(false, (IAction[])(object)new IAction[1] { (IAction)MCH_Base.GaussRound }), MCH_Base.GaussRound.CanUse(out act, (CanUseOption)3));
+				case 7:
+					return OpenerStep(IsLastGCD(true, (IAction[])(object)new IAction[1] { (IAction)MCH_Base.SlugShot }), MCH_Base.SlugShot.CanUse(out act, (CanUseOption)1));
+				case 8:
+					return OpenerStep(IsLastAbility(false, (IAction[])(object)new IAction[1] { (IAction)MCH_Base.GaussRound }), MCH_Base.GaussRound.CanUse(out act, (CanUseOption)3));
+				case 9:
+					return OpenerStep(IsLastAbility(false, (IAction[])(object)new IAction[1] { (IAction)MCH_Base.Ricochet }), MCH_Base.Ricochet.CanUse(out act, (CanUseOption)3));
+				case 10:
+					return OpenerStep(IsLastGCD(true, (IAction[])(object)new IAction[1] { (IAction)MCH_Base.CleanShot }), MCH_Base.CleanShot.CanUse(out act, (CanUseOption)1));
+				case 11:
+					return OpenerStep(IsLastAbility(false, (IAction[])(object)new IAction[1] { (IAction)MCH_Base.Reassemble }), MCH_Base.Reassemble.CanUse(out act, (CanUseOption)3));
+				case 12:
+					return OpenerStep(IsLastAbility(false, (IAction[])(object)new IAction[1] { (IAction)MCH_Base.Wildfire }), MCH_Base.Wildfire.CanUse(out act, (CanUseOption)17));
+				case 13:
+					return OpenerStep(IsLastGCD(false, (IAction[])(object)new IAction[1] { (IAction)MCH_Base.ChainSaw }), MCH_Base.ChainSaw.CanUse(out act, (CanUseOption)1));
+				case 14:
+					return OpenerStep(IsLastAbility(true, (IAction[])(object)new IAction[1] { (IAction)MCH_Base.RookAutoturret }), MCH_Base.RookAutoturret.CanUse(out act, (CanUseOption)1));
+				case 15:
+					return OpenerStep(IsLastAbility(false, (IAction[])(object)new IAction[1] { (IAction)MCH_Base.Hypercharge }), MCH_Base.Hypercharge.CanUse(out act, (CanUseOption)51));
+				case 16:
+					return OpenerStep(IsLastGCD(false, (IAction[])(object)new IAction[1] { (IAction)MCH_Base.HeatBlast }) && OverHeatStacks == 4, MCH_Base.HeatBlast.CanUse(out act, (CanUseOption)1));
+				case 17:
+					return OpenerStep(IsLastAbility(false, (IAction[])(object)new IAction[1] { (IAction)MCH_Base.Ricochet }), MCH_Base.Ricochet.CanUse(out act, (CanUseOption)3));
+				case 18:
+					return OpenerStep(IsLastGCD(false, (IAction[])(object)new IAction[1] { (IAction)MCH_Base.HeatBlast }) && OverHeatStacks == 3, MCH_Base.HeatBlast.CanUse(out act, (CanUseOption)1));
+				case 19:
+					return OpenerStep(IsLastAbility(false, (IAction[])(object)new IAction[1] { (IAction)MCH_Base.GaussRound }), MCH_Base.GaussRound.CanUse(out act, (CanUseOption)3));
+				case 20:
+					return OpenerStep(IsLastGCD(false, (IAction[])(object)new IAction[1] { (IAction)MCH_Base.HeatBlast }) && OverHeatStacks == 2, MCH_Base.HeatBlast.CanUse(out act, (CanUseOption)1));
+				case 21:
+					return OpenerStep(IsLastAbility(false, (IAction[])(object)new IAction[1] { (IAction)MCH_Base.Ricochet }), MCH_Base.Ricochet.CanUse(out act, (CanUseOption)3));
+				case 22:
+					return OpenerStep(IsLastGCD(false, (IAction[])(object)new IAction[1] { (IAction)MCH_Base.HeatBlast }) && OverHeatStacks == 1, MCH_Base.HeatBlast.CanUse(out act, (CanUseOption)1));
+				case 23:
+					return OpenerStep(IsLastAbility(false, (IAction[])(object)new IAction[1] { (IAction)MCH_Base.GaussRound }), MCH_Base.GaussRound.CanUse(out act, (CanUseOption)3));
+				case 24:
+					return OpenerStep(IsLastGCD(false, (IAction[])(object)new IAction[1] { (IAction)MCH_Base.HeatBlast }) && OverHeatStacks == 0, MCH_Base.HeatBlast.CanUse(out act, (CanUseOption)1));
+				case 25:
+					return OpenerStep(IsLastAbility(false, (IAction[])(object)new IAction[1] { (IAction)MCH_Base.Ricochet }), MCH_Base.Ricochet.CanUse(out act, (CanUseOption)3));
+				case 26:
+					return OpenerStep(IsLastGCD(false, (IAction[])(object)new IAction[1] { (IAction)MCH_Base.Drill }), MCH_Base.Drill.CanUse(out act, (CanUseOption)1));
+				case 27:
+					OpenerHasFinished = true;
+					OpenerInProgress = false;
+					// Finished Early AA
+					break;
+				}
+					break;
+				case 1: //Delayed Tools
+					switch (Openerstep)
 			{
 			case 0:
 				return OpenerStep(IsLastGCD(true, SplitShot), SplitShot.CanUse(out act, (CanUseOption)1));
@@ -173,8 +265,10 @@ public class MchRotationKirbo : MCH_Base
 			case 27:
 				OpenerHasFinished = true;
 				OpenerInProgress = false;
-				// PluginLog.Debug("Succesfully completed Opener: 'Delayed Tools'", Array.Empty<object>());
+				// Finished Delayed Tools
 				break;
+			}
+					break;
 			}
 		}
 		act = null;
@@ -193,6 +287,39 @@ public class MchRotationKirbo : MCH_Base
 
 	protected override bool GeneralGCD(out IAction act)
 	{
+		act = null;
+
+		#region PvP
+		if (HostileTarget && Configs.GetBool("LBInPvP") && HostileTarget.CurrentHp < 30000 && PvP_MarksmansSpite.CanUse(out act, CanUseOption.MustUse)) return true;
+
+		if (!Player.HasStatus(true, StatusID.PvP_Overheat))
+		{
+			if (Player.HasStatus(true, StatusID.PvP_DrillPrimed))
+			{
+				if (PvP_Drill.CanUse(out act, CanUseOption.MustUseEmpty)) return true;
+			}
+			else if (Player.HasStatus(true, StatusID.PvP_BioblasterPrimed))
+			{
+				if (PvP_Bioblaster.CanUse(out act, CanUseOption.MustUseEmpty)) return true;
+			}
+			else if (Player.HasStatus(true, StatusID.PvP_AirAnchorPrimed))
+			{
+				if (PvP_AirAnchor.CanUse(out act, CanUseOption.MustUseEmpty)) return true;
+			}
+			else if (Player.HasStatus(true, StatusID.PvP_ChainSawPrimed))
+			{
+				if (PvP_ChainSaw.CanUse(out act, CanUseOption.MustUseEmpty)) return true;
+			}
+			else
+			{
+				if (PvP_Scattergun.CanUse(out act, CanUseOption.MustUseEmpty)) return true;
+			}
+		}
+
+		if (PvP_BlastCharge.CanUse(out act)) return true;
+		#endregion
+
+		#region PVE
 		if (OpenerInProgress)
 		{
 			return Opener(out act);
@@ -246,11 +373,24 @@ public class MchRotationKirbo : MCH_Base
 		}
 		act = null;
 		return false;
+		#endregion
 	}
 
 
 	protected override bool EmergencyAbility(IAction nextGCD, out IAction act)
 	{
+		#region PvP
+		act = null;
+
+		if (Player.HasStatus(true, StatusID.PvP_Overheat) && PvP_Wildfire.CanUse(out act, CanUseOption.MustUse)) return true;
+
+		if ((nextGCD.IsTheSameTo(ActionID.PvP_Drill) || nextGCD.IsTheSameTo(ActionID.PvP_Bioblaster) && NumberOfHostilesInRange > 2 || nextGCD.IsTheSameTo(ActionID.PvP_AirAnchor)) &&
+			!(IsLastAction(ActionID.PvP_Drill) || IsLastAction(ActionID.PvP_Bioblaster) || IsLastAction(ActionID.PvP_AirAnchor)) && PvP_Analysis.CanUse(out act, CanUseOption.MustUse)) return true;
+
+		if (PvP_BishopAutoTurret.CanUse(out act, CanUseOption.MustUse)) return true;
+		#endregion
+
+		#region PVE
 		TerritoryContentType Content = TerritoryContentType;
 		bool Dungeon = (int)Content == 2;
 		bool Roulette = (int)Content == 1;
@@ -428,10 +568,12 @@ public class MchRotationKirbo : MCH_Base
 		}
 		act = null;
 		return false;
+		#endregion
 	}
 
 	protected override bool AttackAbility(out IAction act)
 	{
+		#region PVE
 		if (OpenerInProgress)
 		{
 			return Opener(out act);
@@ -449,6 +591,7 @@ public class MchRotationKirbo : MCH_Base
 		}
 		act = null;
 		return false;
+		#endregion
 	}
 
 	protected override void UpdateInfo()
@@ -487,7 +630,7 @@ public class MchRotationKirbo : MCH_Base
 		}
 	}
 
-	
+
 	public void HandleOpenerAvailability()
 	{
 		bool Lvl90 = Player.Level >= 90;
