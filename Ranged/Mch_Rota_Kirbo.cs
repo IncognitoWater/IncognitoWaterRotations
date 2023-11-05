@@ -46,7 +46,8 @@ public class MchRotationKirbo : MCH_Base
 			.SetBool("BatteryStuck", false, "Battery overcap protection\n(Will try and use Rook AutoTurret if Battery is at 100 and next skill increases Battery)")
 			.SetBool("HeatStuck", false, "Heat overcap protection\n(Will try and use HyperCharge if Heat is at 100 and next skill increases Heat)")
 			.SetBool("DumpSkills", true, "Dump Skills when Target is dying\n(Will try and spend remaining resources before boss dies)")
-			.SetBool("LBInPvP", true, "Use the LB in PvP when Target is killable by it");
+			.SetBool("LBInPvP", true, "Use the LB in PvP when Target is killable by it")
+			.SetBool("GuardCancel",false,"Turn on if you want RS to use nothing while in guard in PvP");
 	}
 
 	protected override IAction CountDownAction(float remainTime)
@@ -290,6 +291,7 @@ public class MchRotationKirbo : MCH_Base
 		act = null;
 
 		#region PvP
+		if (Configs.GetBool("GuardCancel") && Player.HasStatus(true, StatusID.PvP_Guard)) return false;
 		if (HostileTarget && Configs.GetBool("LBInPvP") && HostileTarget.CurrentHp < 30000 && PvP_MarksmansSpite.CanUse(out act, CanUseOption.MustUse)) return true;
 
 		if (!Player.HasStatus(true, StatusID.PvP_Overheat))
@@ -379,6 +381,8 @@ public class MchRotationKirbo : MCH_Base
 		#region PvP
 		act = null;
 		
+		if (Configs.GetBool("GuardCancel") && Player.HasStatus(true, StatusID.PvP_Guard)) return false;
+
 		if (Player.HasStatus(true, StatusID.PvP_Overheat) && PvP_Wildfire.CanUse(out act, CanUseOption.MustUse)) return true;
 
 		if ((nextGCD.IsTheSameTo(ActionID.PvP_Drill) || nextGCD.IsTheSameTo(ActionID.PvP_Bioblaster) && NumberOfHostilesInRange > 2 || nextGCD.IsTheSameTo(ActionID.PvP_AirAnchor)) &&

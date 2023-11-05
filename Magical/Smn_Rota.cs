@@ -163,7 +163,7 @@ public sealed class SmnRotation : SMN_Base
         }
 
         if (Configs.GetBool("RadiantOnCooldown") && (RadiantAegis.CurrentCharges == 2) && SummonBahamut.IsCoolingDown && RadiantAegis.CanUse(out act, CanUseOption.MustUse)) return true;
-        if (Configs.GetBool("RadiantOnCooldown") && Player.Level < 88 && SummonBahamut.IsCoolingDown && RadiantAegis.CanUse(out act, CanUseOption.MustUse)) return true;
+        if (Configs.GetBool("RadiantOnCooldown") && Player.Level < 88 && SummonBahamut.IsCoolingDown && RadiantAegis.CanUse(out act, CanUseOption.MustUseEmpty)) return true;
 
         return base.EmergencyAbility(nextGCD, out act);
     }
