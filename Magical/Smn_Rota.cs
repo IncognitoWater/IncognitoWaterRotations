@@ -19,6 +19,7 @@ public sealed class SmnRotation : SMN_Base
 			.SetCombo("SummonOrder", 0, "Invocation Order", "Topaz-Emerald-Ruby", "Topaz-Ruby-Emerald", "Emerald-Topaz-Ruby")
 			.SetBool("addCrimsonCyclone", true, "Use Crimson Cyclone")
 			.SetBool("RadiantOnCooldown", false, "Use Radiant On Cooldown")
+			.SetBool("OrbWalkerAdjust",false,"Turn it on to be able to use Orbwalker with this rotation")
 			.SetBool("UseBahamutPvP",false,"Use Bahamut in PvP")
 			.SetBool("UsePhoenixPvP",false,"Use Phoenix in PvP")
 			.SetBool("CrimsonCycloneInPvP", false, "Use CrimsonCyclone in PvP")
@@ -61,18 +62,40 @@ public sealed class SmnRotation : SMN_Base
 
 		#region PvE
 		//Spawning carbuncle + attempting to avoid unwanted try of spawning carbuncle
-		if (!InBahamut && !InPhoenix && !InGaruda && !InIfrit && !InTitan && SummonCarbuncle.CanUse(out act)) return true;
+		if (Configs.GetBool("OrbWalkerAdjust"))
+		{
+			if (!InBahamut && !InPhoenix && !InGaruda && !InIfrit && !InTitan && SummonCarbuncle.CanUse(out act,CanUseOption.IgnoreCastCheck)) return true;
+		}
+		else
+		{
+			if (!InBahamut && !InPhoenix && !InGaruda && !InIfrit && !InTitan && SummonCarbuncle.CanUse(out act)) return true;
+		}
 
 		//slipstream
-		if (Slipstream.CanUse(out act, CanUseOption.MustUse)) return true;
+		if (Configs.GetBool("OrbWalkerAdjust"))
+		{
+			if (Slipstream.CanUse(out act, CanUseOption.IgnoreCastCheck)) return true;
+		}
+		else
+		{
+			if (Slipstream.CanUse(out act, CanUseOption.MustUse)) return true;
+		}
+		
 		//Crimson strike 
 		if (CrimsonStrike.CanUse(out act, CanUseOption.MustUse)) return true;
 
 		//AOE
 		if (PreciousBrilliance.CanUse(out act)) return true;
 		//gemshine
-		if (Gemshine.CanUse(out act)) return true;
-
+		if (InIfrit && Configs.GetBool("OrbWalkerAdjust"))
+		{
+			if (Gemshine.CanUse(out act, CanUseOption.IgnoreCastCheck)) return true;
+		}
+		else
+		{
+			if (Gemshine.CanUse(out act)) return true;
+		}
+		
 		if (Configs.GetBool("addCrimsonCyclone") && CrimsonCyclone.CanUse(out act, CanUseOption.MustUse)) return true;
 
 		//Summon Baha or Phoenix
@@ -118,10 +141,24 @@ public sealed class SmnRotation : SMN_Base
 			!Player.HasStatus(true, StatusID.SwiftCast) && !InBahamut && !InPhoenix && !InGaruda && !InTitan &&
 			RuinIV.CanUse(out act, CanUseOption.MustUse)) return true;
 		//Outburst
-		if (Outburst.CanUse(out act)) return true;
+		if (Configs.GetBool("OrbWalkerAdjust"))
+		{
+			if (Outburst.CanUse(out act,CanUseOption.IgnoreCastCheck)) return true;
+		}
+		else
+		{
+			if (Outburst.CanUse(out act)) return true;
+		}
 
 		//Any ruin ( 1-2-3 ) 
-		if (Ruin.CanUse(out act)) return true;
+		if (Configs.GetBool("OrbWalkerAdjust"))
+		{
+			if (Ruin.CanUse(out act,CanUseOption.IgnoreCastCheck)) return true;
+		}
+		else
+		{
+			if (Ruin.CanUse(out act)) return true;
+		}
 		return false;
 		#endregion
 	}
