@@ -44,7 +44,7 @@ public class MchRotationKirbo : MCH_Base
 			.SetBool("HeatStuck", false, "Heat overcap protection\n(Will try and use HyperCharge if Heat is at 100 and next skill increases Heat)")
 			.SetBool("DumpSkills", true, "Dump Skills when Target is dying\n(Will try and spend remaining resources before boss dies)")
 			.SetBool("LBInPvP", true, "Use the LB in PvP when Target is killable by it")
-			.SetBool("GuardCancel",false,"Turn on if you want RS to use nothing while in guard in PvP");
+			.SetBool("GuardCancel",false,"Turn on if you want to FORCE RS to use nothing while in guard in PvP");
 	}
 
 	protected override IAction CountDownAction(float remainTime)
