@@ -481,7 +481,7 @@ public class MchRotationKirbo : MCH_Base
 					return true;
 				}
 			}
-			if (RookAutoturret.CanUse(out act, (CanUseOption)16) && HostileTarget.IsTargetable && InCombat)
+			if (RookAutoturret.CanUse(out act, (CanUseOption)16) && HostileTarget && HostileTarget.IsTargetable && InCombat)
 			{
 				if (CombatElapsedLess(60f) && !CombatElapsedLess(45f) && Battery >= 50)
 				{
@@ -536,11 +536,11 @@ public class MchRotationKirbo : MCH_Base
 					return true;
 				}
 			}
-			if (BarrelStabilizer.CanUse(out act) && HostileTarget.IsTargetable && InCombat)
+			if (BarrelStabilizer.CanUse(out act) && HostileTarget && HostileTarget.IsTargetable && InCombat)
 			{
 				return true;
 			}
-			if (Hypercharge.CanUse(out act) && InCombat && HostileTarget.IsTargetable)
+			if (Hypercharge.CanUse(out act) && InCombat && HostileTarget && HostileTarget.IsTargetable)
 			{
 				if (ObjectHelper.GetHealthRatio(HostileTarget) > 0.25)
 				{
@@ -551,7 +551,7 @@ public class MchRotationKirbo : MCH_Base
 					return true;
 				}
 			}
-			if (RookAutoturret.CanUse(out act) && HostileTarget.IsTargetable && InCombat)
+			if (RookAutoturret.CanUse(out act) && HostileTarget &&  HostileTarget.IsTargetable && InCombat)
 			{
 				if (!HostileTarget.IsBoss() && CombatElapsedLess(30f))
 				{
