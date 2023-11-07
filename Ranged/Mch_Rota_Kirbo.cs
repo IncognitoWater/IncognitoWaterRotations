@@ -7,9 +7,12 @@ public class MchRotationKirbo : MCH_Base
 
 	public override string GameVersion => "6.51";
 
-	public override string RotationName => "Kirbo's Machinist + PVP";
+	public override string RotationName => "Kirbo Incognito Machinist Revived";
 
-	public override string Description => "Kirbo's Machinist, just updated some things code wise, Do Delayed Tools and Early AA. \n Should be optimised for Boss Level 90 content with 2.5 GCD.";
+	public override string Description => "Kirbo's Machinist, revived and modified by Incognito, Do Delayed Tools and Early AA. \n Should be optimised for Boss Level 90 content with 2.5 GCD.";
+	
+	public override CombatType Type => CombatType.Both;
+
 
 	private bool InBurst { get; set; }
 
@@ -36,16 +39,13 @@ public class MchRotationKirbo : MCH_Base
 	private bool Flag { get; set; }
 
 
-	protected override IRotationConfigSet CreateConfiguration()
-	{
-		return base.CreateConfiguration()
-			.SetCombo("RotationSelection", 1, "Select which Rotation will be used. (Openers will only be followed at level 90)", new string[2] { "Early AA", "Delayed Tools" })
-			.SetBool("BatteryStuck", false, "Battery overcap protection\n(Will try and use Rook AutoTurret if Battery is at 100 and next skill increases Battery)")
-			.SetBool("HeatStuck", false, "Heat overcap protection\n(Will try and use HyperCharge if Heat is at 100 and next skill increases Heat)")
-			.SetBool("DumpSkills", true, "Dump Skills when Target is dying\n(Will try and spend remaining resources before boss dies)")
-			.SetBool("LBInPvP", true, "Use the LB in PvP when Target is killable by it")
-			.SetBool("GuardCancel",false,"Turn on if you want to FORCE RS to use nothing while in guard in PvP");
-	}
+	protected override IRotationConfigSet CreateConfiguration() => base.CreateConfiguration()
+		.SetCombo(CombatType.PvE,"RotationSelection", 1, "Select which Rotation will be used. (Openers will only be followed at level 90)", new string[2] { "Early AA", "Delayed Tools" })
+		.SetBool(CombatType.PvE,"BatteryStuck", false, "Battery overcap protection\n(Will try and use Rook AutoTurret if Battery is at 100 and next skill increases Battery)")
+		.SetBool(CombatType.PvE,"HeatStuck", false, "Heat overcap protection\n(Will try and use HyperCharge if Heat is at 100 and next skill increases Heat)")
+		.SetBool(CombatType.PvE,"DumpSkills", true, "Dump Skills when Target is dying\n(Will try and spend remaining resources before boss dies)")
+		.SetBool(CombatType.PvP,"LBInPvP", true, "Use the LB in PvP when Target is killable by it")
+		.SetBool(CombatType.PvP,"GuardCancel",false,"Turn on if you want to FORCE RS to use nothing while in guard in PvP");
 
 	protected override IAction CountDownAction(float remainTime)
 	{
@@ -291,7 +291,7 @@ public class MchRotationKirbo : MCH_Base
 		if (Configs.GetBool("GuardCancel") && Player.HasStatus(true, StatusID.PvP_Guard)) return false;
 		if (HostileTarget && Configs.GetBool("LBInPvP") && HostileTarget.CurrentHp < 30000 && PvP_MarksmansSpite.CanUse(out act, CanUseOption.MustUse)) return true;
 
-		if (!Player.HasStatus(true, StatusID.PvP_Overheat))
+		if (!Player.HasStatus(true, StatusID.PvP_Overheated))
 		{
 			if (Player.HasStatus(true, StatusID.PvP_DrillPrimed))
 			{
@@ -380,7 +380,7 @@ public class MchRotationKirbo : MCH_Base
 		
 		if (Configs.GetBool("GuardCancel") && Player.HasStatus(true, StatusID.PvP_Guard)) return false;
 
-		if (Player.HasStatus(true, StatusID.PvP_Overheat) && PvP_Wildfire.CanUse(out act, CanUseOption.MustUse)) return true;
+		if (Player.HasStatus(true, StatusID.PvP_Overheated) && PvP_Wildfire.CanUse(out act, CanUseOption.MustUse)) return true;
 
 		if ((nextGCD.IsTheSameTo(ActionID.PvP_Drill) || nextGCD.IsTheSameTo(ActionID.PvP_Bioblaster) && NumberOfHostilesInRange > 2 || nextGCD.IsTheSameTo(ActionID.PvP_AirAnchor)) &&
 			!(IsLastAction(ActionID.PvP_Drill) || IsLastAction(ActionID.PvP_Bioblaster) || IsLastAction(ActionID.PvP_AirAnchor)) && PvP_Analysis.CanUse(out act, CanUseOption.MustUse)) return true;
@@ -413,7 +413,7 @@ public class MchRotationKirbo : MCH_Base
 		{
 			return true;
 		}
-		if (Configs.GetBool("DumpSkills") && HostileTarget.IsDying() && HostileTarget.IsBoss())
+		if (Configs.GetBool("DumpSkills") && HostileTarget.IsDying() && HostileTarget.IsBossFromIcon())
 		{
 			if (!StatusHelper.HasStatus(Player, false, (StatusID)851) && Reassemble.CanUse(out act, (CanUseOption)2) && Reassemble.CurrentCharges > 0 && (nextGCD == ChainSaw || nextGCD == AirAnchor || nextGCD == Drill))
 			{
@@ -522,7 +522,7 @@ public class MchRotationKirbo : MCH_Base
 		}
 		if (Deepdungeon || Eureka || Roulette || Dungeon || VCDungeonFinder || FATEs || Player.Level < 90)
 		{
-			if ((IsLastAbility(false, Hypercharge) || Heat >= 50) && HostileTarget.IsBoss()
+			if ((IsLastAbility(false, Hypercharge) || Heat >= 50) && HostileTarget.IsBossFromIcon()
 				&& Wildfire.CanUse(out act, CanUseOption.OnLastAbility)) return true;
 			
 			if (Reassemble.CurrentCharges > 0 && Reassemble.CanUse(out act, (CanUseOption)3))
@@ -546,18 +546,18 @@ public class MchRotationKirbo : MCH_Base
 				{
 					return true;
 				}
-				if (HostileTarget.IsBoss())
+				if (HostileTarget.IsBossFromIcon())
 				{
 					return true;
 				}
 			}
 			if (RookAutoturret.CanUse(out act) && HostileTarget &&  HostileTarget.IsTargetable && InCombat)
 			{
-				if (!HostileTarget.IsBoss() && CombatElapsedLess(30f))
+				if (!HostileTarget.IsBossFromIcon() && CombatElapsedLess(30f))
 				{
 					return true;
 				}
-				if (HostileTarget.IsBoss())
+				if (HostileTarget.IsBossFromIcon())
 				{
 					return true;
 				}

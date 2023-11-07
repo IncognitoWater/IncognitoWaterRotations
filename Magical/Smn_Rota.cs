@@ -8,27 +8,26 @@ public sealed class SmnRotation : SMN_Base
 {
 	public override string GameVersion => "6.51";
 
-	public override string RotationName => "IncognitoWater's Summoner + PvP";
+	public override string RotationName => "IncognitoWater's SMN";
 
 	public override string Description => "High Level Content Summoner Rotation and PvP";
 
-	protected override IRotationConfigSet CreateConfiguration()
-	{
-		return base.CreateConfiguration()
-			.SetCombo("addSwiftcast", 0, "Use Swiftcast With", "No", "Emerald", "Ruby", "All")
-			.SetCombo("SummonOrder", 0, "Invocation Order", "Topaz-Emerald-Ruby", "Topaz-Ruby-Emerald", "Emerald-Topaz-Ruby")
-			.SetBool("addCrimsonCyclone", true, "Use Crimson Cyclone")
-			.SetBool("RadiantOnCooldown", false, "Use Radiant On Cooldown")
-			.SetBool("OrbWalkerAdjust",false,"Turn it on to be able to use Orbwalker with this rotation")
-			.SetBool("UseBahamutPvP",false,"Use Bahamut in PvP")
-			.SetBool("UsePhoenixPvP",false,"Use Phoenix in PvP")
-			.SetBool("CrimsonCycloneInPvP", false, "Use CrimsonCyclone in PvP")
-			.SetBool("GuardCancel",false,"Turn on if you want to FORCE RS to use nothing while in guard in PvP");
-	}
+	public override CombatType Type => CombatType.Both;
+
+	protected override IRotationConfigSet CreateConfiguration() => base.CreateConfiguration()
+		.SetCombo(CombatType.PvE,"addSwiftcast", 0, "Use Swiftcast With", "No", "Emerald", "Ruby", "All")
+		.SetCombo(CombatType.PvE,"SummonOrder", 0, "Invocation Order", "Topaz-Emerald-Ruby", "Topaz-Ruby-Emerald", "Emerald-Topaz-Ruby")
+		.SetBool(CombatType.PvE,"addCrimsonCyclone", true, "Use Crimson Cyclone")
+		.SetBool(CombatType.PvE,"RadiantOnCooldown", false, "Use Radiant On Cooldown")
+		.SetBool(CombatType.PvE,"OrbWalkerAdjust",false,"Turn it on to be able to use Orbwalker with this rotation")
+		.SetBool(CombatType.PvP,"UseBahamutPvP",false,"Use Bahamut in PvP")
+		.SetBool(CombatType.PvP,"UsePhoenixPvP",false,"Use Phoenix in PvP")
+		.SetBool(CombatType.PvP,"CrimsonCycloneInPvP", false, "Use CrimsonCyclone in PvP")
+		.SetBool(CombatType.PvP,"GuardCancel",false,"Turn on if you want to FORCE RS to use nothing while in guard in PvP");
 
 	private float GetPlayerHealthPercent()
 	{
-		return Player.CurrentHp / Player.MaxHp * 100;
+		return (Player.CurrentHp / Player.MaxHp) * 100;
 	}
 	
 	public override bool CanHealSingleSpell => false;
@@ -174,9 +173,9 @@ public sealed class SmnRotation : SMN_Base
 
 
 		//Burst for bahamut
-		if ((InBahamut && SummonBahamut.ElapsedOneChargeAfterGCD(3) || InPhoenix || (HostileTarget.IsBoss() && HostileTarget.IsDying())) && EnkindleBahamut.CanUse(out act, CanUseOption.MustUse)) return true;
+		if ((InBahamut && SummonBahamut.ElapsedOneChargeAfterGCD(3) || InPhoenix || (HostileTarget.IsBossFromIcon() && HostileTarget.IsDying())) && EnkindleBahamut.CanUse(out act, CanUseOption.MustUse)) return true;
 		//Burst second part for bahamut
-		if ((InBahamut && SummonBahamut.ElapsedOneChargeAfterGCD(3) || (HostileTarget.IsBoss() && HostileTarget.IsDying())) && DeathFlare.CanUse(out act, CanUseOption.MustUse)) return true;
+		if ((InBahamut && SummonBahamut.ElapsedOneChargeAfterGCD(3) || (HostileTarget.IsBossFromIcon() && HostileTarget.IsDying())) && DeathFlare.CanUse(out act, CanUseOption.MustUse)) return true;
 		//Change rekindle timing to avoid triple weaving issue if animation are unlocked
 		if (InPhoenix && SummonBahamut.ElapsedOneChargeAfterGCD(1) && Rekindle.CanUse(out act, CanUseOption.MustUse)) return true;
 		//Special Titan
@@ -184,10 +183,10 @@ public sealed class SmnRotation : SMN_Base
 
 		//Painflare timing for tincture and rotation
 		if ((Player.HasStatus(false, StatusID.SearingLight) && InBahamut && (SummonBahamut.ElapsedOneChargeAfterGCD(4) || ((!EnergyDrain.IsCoolingDown || EnergyDrain.ElapsedAfter(50))) && SummonBahamut.ElapsedOneChargeAfterGCD(1)) ||
-			!SearingLight.EnoughLevel || (HostileTarget.IsBoss() && HostileTarget.IsDying())) && PainFlare.CanUse(out act)) return true;
+			!SearingLight.EnoughLevel || (HostileTarget.IsBossFromIcon() && HostileTarget.IsDying())) && PainFlare.CanUse(out act)) return true;
 		//fester timing for tincture and rotation
 		if ((Player.HasStatus(false, StatusID.SearingLight) && InBahamut && (SummonBahamut.ElapsedOneChargeAfterGCD(4) || ((!EnergyDrain.IsCoolingDown || EnergyDrain.ElapsedAfter(50))) && SummonBahamut.ElapsedOneChargeAfterGCD(1)) ||
-			!SearingLight.EnoughLevel || (HostileTarget.IsBoss() && HostileTarget.IsDying())) && Fester.CanUse(out act)) return true;
+			!SearingLight.EnoughLevel || (HostileTarget.IsBossFromIcon() && HostileTarget.IsDying())) && Fester.CanUse(out act)) return true;
 
 		//energy siphon recharge
 		if (AetherCharge.CurrentCharges == 0 && EnergySiphon.CanUse(out act)) return true;

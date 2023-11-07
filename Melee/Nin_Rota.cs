@@ -5,9 +5,11 @@ public sealed class NinRotation : NIN_Base
 {
     public override string GameVersion => "6.51";
 
-    public override string RotationName => "Incognito's Nin";
+    public override string RotationName => "Incognito's NIN";
     
     public override string Description => "Ninja rotation close to the original one";
+    
+    public override CombatType Type => CombatType.PvE;
 
 
     private static INinAction _ninActionAim;
@@ -15,12 +17,9 @@ public sealed class NinRotation : NIN_Base
     private static bool InMug => Mug.IsCoolingDown && !Mug.ElapsedAfter(19);
     private static bool NoNinjutsu => AdjustId(ActionID.Ninjutsu) is ActionID.Ninjutsu or ActionID.RabbitMedium;
 
-    protected override IRotationConfigSet CreateConfiguration()
-    {
-        return base.CreateConfiguration()
-            .SetBool("UseHide", true, "Use Hide")
-            .SetBool("AutoUnhide", true, "Use Unhide");
-    }
+    protected override IRotationConfigSet CreateConfiguration() => base.CreateConfiguration()
+        .SetBool(CombatType.PvE,"UseHide", true, "Use Hide")
+        .SetBool(CombatType.PvE,"AutoUnhide", true, "Use Unhide");
 
     protected override IAction CountDownAction(float remainTime)
     {

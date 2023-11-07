@@ -6,7 +6,10 @@ public sealed class RdmRotation : RDM_Base
 {
     public override string GameVersion => "6.51";
 
-    public override string RotationName => "Incognito's RedMage";
+    public override string RotationName => "Incognito's RDM";
+    
+    public override CombatType Type => CombatType.PvE;
+
 
     static IBaseAction VerthunderStartUp { get; } = new BaseAction(ActionID.Verthunder);
     
@@ -36,13 +39,10 @@ public sealed class RdmRotation : RDM_Base
             return true;
         }
     }
-
-    protected override IRotationConfigSet CreateConfiguration()
-    {
-        return base.CreateConfiguration()
-            .SetBool("UseVercure", false, "Use Vercure for Dualcast when out of combat.")
-            .SetBool("UseAcceleration", false, "Use Acceleration On Cooldown to avoid overstack");
-    }
+    
+    protected override IRotationConfigSet CreateConfiguration() => base.CreateConfiguration()
+        .SetBool(CombatType.PvE,"UseVercure", false, "Use Vercure for Dualcast when out of combat.")
+        .SetBool(CombatType.PvE,"UseAcceleration", false, "Use Acceleration On Cooldown to avoid overstack");
 
     protected override IAction CountDownAction(float remainTime)
     {

@@ -9,6 +9,8 @@ public sealed class MchRotation : MCH_Base
     
     public override string Description => "Basic Delayed Tools";
 
+    public override CombatType Type => CombatType.PvE;
+
     protected override IAction CountDownAction(float remainTime)
     {
         if (remainTime < CountDownAhead)
@@ -21,12 +23,10 @@ public sealed class MchRotation : MCH_Base
         return base.CountDownAction(remainTime);
     }
     
-    protected override IRotationConfigSet CreateConfiguration()
-    {
-        return base.CreateConfiguration()
-            .SetBool("MCH_Reassemble", true, "Use Reassamble with ChainSaw");
-    }
     
+    protected override IRotationConfigSet CreateConfiguration() => base.CreateConfiguration()
+        .SetBool(CombatType.PvE,"MCH_Reassemble", true, "Use Reassamble with ChainSaw");
+
     protected override bool GeneralGCD(out IAction act)
     {
         //Overheated
