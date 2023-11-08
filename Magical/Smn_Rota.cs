@@ -23,7 +23,9 @@ public sealed class SmnRotation : SMN_Base
 		.SetBool(CombatType.PvP,"UseBahamutPvP",false,"Use Bahamut in PvP")
 		.SetBool(CombatType.PvP,"UsePhoenixPvP",false,"Use Phoenix in PvP")
 		.SetBool(CombatType.PvP,"CrimsonCycloneInPvP", false, "Use CrimsonCyclone in PvP")
-		.SetBool(CombatType.PvP,"GuardCancel",false,"Turn on if you want to FORCE RS to use nothing while in guard in PvP");
+		.SetBool(CombatType.PvP,"GuardCancel",false,"Turn on if you want to FORCE RS to use nothing while enemy is in guard in PvP")
+		.SetBool(CombatType.PvP, "CrimsonSpecial", false, "Turn on if you want Crimson in PvP to be executed only if the enemys has less life than the next setting \n (Need CrimsonCyclonPvpTurnedOn)")
+		.SetInt(CombatType.PvP, "CrimsonSpecialValue", 20000, "How much HP does the enemy have for crimson to be done",1,100000);
 
 	private float GetPlayerHealthPercent()
 	{
@@ -53,8 +55,16 @@ public sealed class SmnRotation : SMN_Base
 		{
 			if (PvP_FountainOfFire.CanUse(out act, CanUseOption.MustUse)) return true;
 		}
-		if (Configs.GetBool("CrimsonCycloneInPvP") && PvP_CrimsonCyclone.CanUse(out act,CanUseOption.MustUse)) return true;
-		if ( IsLastGCD(ActionID.PvP_CrimsonCyclone) && PvP_CrimsonStrike.CanUse(out act,CanUseOption.MustUse)) return true;
+		if(Configs.GetBool("CrimsonCycloneInPvP") && (Configs.GetBool("CrimsonSpecial")))
+		{
+			if ((HostileTarget && HostileTarget.CurrentHp < Configs.GetInt("CrimsonSpecialValue"))
+				&& PvP_CrimsonCyclone.CanUse(out act,CanUseOption.MustUse)) return true;
+		}
+		if(Configs.GetBool("CrimsonCycloneInPvP") && !(Configs.GetBool("CrimsonSpecial")))
+		{
+			if (PvP_CrimsonCyclone.CanUse(out act,CanUseOption.MustUse)) return true;
+		}
+		if (IsLastGCD(ActionID.PvP_CrimsonCyclone) && PvP_CrimsonStrike.CanUse(out act,CanUseOption.MustUse)) return true;
 		if (PvP_Slipstream.CanUse(out act,CanUseOption.MustUse)) return true;
 		if (PvP_Ruin3.CanUse(out act,CanUseOption.MustUse)) return true;
 		#endregion
