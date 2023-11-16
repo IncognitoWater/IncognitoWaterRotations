@@ -57,7 +57,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.rp.outputs.upload_url }}
+          upload_url: ${{ github.event.release.upload_url }}
           asset_path: artifact/IcWaRotations.dll
           asset_name: IcWaRotations.dll
           asset_content_type: application/x-msdownload
@@ -67,7 +67,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.rp.outputs.upload_url }}
+          upload_url: ${{ github.event.release.upload_url }}
           asset_path: artifact/IcWaRotations.pdb
           asset_name: IcWaRotations.pdb
           asset_content_type: application/octet-stream
