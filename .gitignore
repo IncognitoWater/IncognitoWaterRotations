@@ -1,3 +1,6 @@
 /obj
 /bin
 /.idea
+Build/net7.0-windows/IcWaRotations.pdb
+Build/net7.0-windows/IcWaRotations.dll
+Build/net7.0-windows/IcWaRotations.deps.json

@@ -9,11 +9,67 @@ on:
 
 # Automatically create a GitHub Release, with release details specified (the relevant commits)
 jobs:
-  release:
-    name: "Release"
-    runs-on: "net7.0-windows"
+  build:
+    if: ${{ needs.release-please.outputs.released }}
+    name: build
+    needs: release-please
+    runs-on: windows-latest
     steps:
-      - uses: "marvinpinto/action-automatic-releases@latest"
+      - uses: actions/checkout@v2
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v1
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          prerelease: false
+          dotnet-version: 7.0.x
+
+      - name: Restore Dependencies
+        run: dotnet restore
+
+      - name: Download Dalamud
+        run: |
+          Invoke-WebRequest -Uri https://goatcorp.github.io/dalamud-distrib/latest.zip -OutFile latest.zip
+          Expand-Archive -Force latest.zip "$env:AppData\XIVLauncher\addon\Hooks\dev"
+
+      - name: Build Plugin
+        run: |
+          invoke-expression 'dotnet build --no-restore --configuration Release'
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          path: |
+            .\build\net7.0-windows\
+  
+  release:
+    name: release
+    needs: [ build ]
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v3
+
+      - name: Display structure of downloaded files
+        run: ls -R
+
+      - name: Upload IcWa dll
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.release-please.outputs.upload_url }}
+          asset_path: artifact/IcWaRotations.dll
+          asset_name: IcWaRotations.dll
+          asset_content_type: application/x-msdownload
+
+      - name: Upload IcWa pdb
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.release-please.outputs.upload_url }}
+          asset_path: artifact/IcWaRotations.pdb
+          asset_name: IcWaRotations.pdb
+          asset_content_type: application/octet-stream
