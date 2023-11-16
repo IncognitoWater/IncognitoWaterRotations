@@ -34,7 +34,7 @@ namespace IcWaRotations.Ranged
 			if (PvP_SilentNocturne.CanUse(out act, CanUseOption.MustUse)) return true;
 			if (PvP_BlastArrow.CanUse(out act, CanUseOption.MustUse)) return true;
 			if (PvP_ApexArrow.CanUse(out act, CanUseOption.MustUseEmpty)) return true;
-			if (PvP_PowerfulShot.CanUse(out act, CanUseOption.MustUse)) return true;
+			if (PvP_PowerfulShot.CanUse(out act, CanUseOption.IgnoreCastCheck)) return true;
 
 
 			return false;
