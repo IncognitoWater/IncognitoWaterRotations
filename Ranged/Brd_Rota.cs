@@ -6,16 +6,7 @@ namespace IcWaRotations.Ranged
 	[RotationDesc(ActionID.Wildfire)]
 	public class BrdRotation : BRD_Base
 	{
-
-        #region PvPDeclaration
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public static IBaseAction PvP_ApexArrow { get; } = new BaseAction(ActionID.PvP_ApexArrow, ActionOption.Buff);
-
-        #endregion
-
+		
         public override string GameVersion => "6.51";
 		public override string RotationName => "Incognito BRD";
 		public override string Description => "PvP Rotation for BRD";
@@ -42,8 +33,8 @@ namespace IcWaRotations.Ranged
 			if (PvP_EmpyrealArrow.CanUse(out act, CanUseOption.MustUseEmpty)) return true;
 			if (PvP_SilentNocturne.CanUse(out act, CanUseOption.MustUse)) return true;
 			if (PvP_BlastArrow.CanUse(out act, CanUseOption.MustUse)) return true;
-			if (PvP_PowerfulShot.CanUse(out act, CanUseOption.MustUse)) return true;
 			if (PvP_ApexArrow.CanUse(out act, CanUseOption.MustUseEmpty)) return true;
+			if (PvP_PowerfulShot.CanUse(out act, CanUseOption.MustUse)) return true;
 
 
 			return false;
