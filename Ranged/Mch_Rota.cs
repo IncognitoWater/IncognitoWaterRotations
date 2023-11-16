@@ -26,12 +26,13 @@ public sealed class MchRotation : MCH_Base
 
 	protected override IRotationConfigSet CreateConfiguration() => base.CreateConfiguration()
 		.SetBool(CombatType.PvE, "MCH_Reassemble", true, "Use Reassamble with ChainSaw")
-		.SetBool(CombatType.PvP,"LBInPvP", true, "Use the LB in PvP when Target is killable by it")
-		.SetBool(CombatType.PvP,"GuardCancel",false,"Turn on if you want to FORCE RS to use nothing while in guard in PvP");
+		.SetBool(CombatType.PvP, "LBInPvP", true, "Use the LB in PvP when Target is killable by it")
+		.SetBool(CombatType.PvP, "GuardCancel", false, "Turn on if you want to FORCE RS to use nothing while in guard in PvP");
 
 	protected override bool GeneralGCD(out IAction act)
 	{
 		act = null;
+
 		#region PvP
 		if (Configs.GetBool("GuardCancel") && Player.HasStatus(true, StatusID.PvP_Guard)) return false;
 		if (HostileTarget && Configs.GetBool("LBInPvP") && HostileTarget.CurrentHp < 30000 && PvP_MarksmansSpite.CanUse(out act, CanUseOption.MustUse)) return true;
@@ -93,7 +94,7 @@ public sealed class MchRotation : MCH_Base
 	{
 		#region PvP
 		act = null;
-		
+
 		if (Configs.GetBool("GuardCancel") && Player.HasStatus(true, StatusID.PvP_Guard)) return false;
 
 		if (Player.HasStatus(true, StatusID.PvP_Overheated) && PvP_Wildfire.CanUse(out act, CanUseOption.MustUse)) return true;
@@ -103,8 +104,8 @@ public sealed class MchRotation : MCH_Base
 
 		if (PvP_BishopAutoTurret.CanUse(out act, CanUseOption.MustUse)) return true;
 		#endregion
-		
-		
+
+
 		if (IsBurst)
 		{
 			if (UseBurstMedicine(out act)) return true;

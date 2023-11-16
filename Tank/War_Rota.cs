@@ -1,6 +1,4 @@
-﻿using Dalamud.Game.ClientState.Objects.SubKinds;
-
-namespace IcWaRotations.Tank
+﻿namespace IcWaRotations.Tank
 {
 	[BetaRotation]
 	[RotationDesc(ActionID.PrimalRend)]
@@ -25,7 +23,6 @@ namespace IcWaRotations.Tank
 			act = null;
 
 			#region PvP
-
 			if (Configs.GetBool("LBInPvP") && HostileTarget && HostileTarget.CurrentHp < Configs.GetInt("PSValue") && PvP_PrimalScream.IsEnabled)
 			{
 				if (PvP_PrimalScream.CanUse(out act, CanUseOption.MustUse)) return true;
@@ -44,7 +41,6 @@ namespace IcWaRotations.Tank
 			if (PvP_ChaoticCyclone.CanUse(out act, CanUseOption.MustUse)) return true;
 
 
-			
 			if (PvP_PrimalRend.CanUse(out act, CanUseOption.MustUse)) return true;
 			if (PvP_StormsPath.CanUse(out act, CanUseOption.MustUse)) return true;
 			if (PvP_Maim.CanUse(out act, CanUseOption.MustUse)) return true;

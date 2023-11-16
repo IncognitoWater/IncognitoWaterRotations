@@ -1,6 +1,4 @@
-﻿using Dalamud.Game.ClientState.Objects.SubKinds;
-
-namespace IcWaRotations.Healer
+﻿namespace IcWaRotations.Healer
 {
 	[BetaRotation]
 	[RotationDesc(ActionID.ChainStratagem)]
@@ -15,11 +13,11 @@ namespace IcWaRotations.Healer
 
 		protected override IRotationConfigSet CreateConfiguration() => base.CreateConfiguration()
 			.SetBool(CombatType.PvP, "LBInPvP", true, "Use the LB in PvP when Target is killable by it")
-			.SetInt(CombatType.PvP, "APValue", 60000, "How much HP does the enemy have for LB:AfflatusPurgation to be done",1,100000)
+			.SetInt(CombatType.PvP, "APValue", 60000, "How much HP does the enemy have for LB:AfflatusPurgation to be done", 1, 100000)
 			.SetBool(CombatType.PvP, "GuardCancel", false, "Turn on if you want to FORCE RS to use nothing while ENEMIES in guard in PvP")
-			.SetInt(CombatType.PvP, "Cure2Value", 60000, "How much HP does the enemy have for Cure2 to be done",1,100000)
-			.SetInt(CombatType.PvP, "MiracleOfNatureValue", 40000, "How much HP does the enemy have for MiracleOfNature to be done",1,100000)
-			.SetInt(CombatType.PvP, "SeraphStrikeValue", 25000, "How much HP does the enemy have for > SeraphStrike to be done",1,100000);
+			.SetInt(CombatType.PvP, "Cure2Value", 60000, "How much HP does the enemy have for Cure2 to be done", 1, 100000)
+			.SetInt(CombatType.PvP, "MiracleOfNatureValue", 40000, "How much HP does the enemy have for MiracleOfNature to be done", 1, 100000)
+			.SetInt(CombatType.PvP, "SeraphStrikeValue", 25000, "How much HP does the enemy have for > SeraphStrike to be done", 1, 100000);
 
 		protected override bool GeneralGCD(out IAction act)
 		{
@@ -44,7 +42,7 @@ namespace IcWaRotations.Healer
 
 
 			if (PvP_Glare3.CanUse(out act, CanUseOption.MustUse)) return true;
-			
+
 			return false;
 			#endregion
 		}

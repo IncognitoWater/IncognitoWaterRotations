@@ -1,6 +1,4 @@
-﻿using Dalamud.Game.ClientState.Objects.SubKinds;
-
-namespace IcWaRotations.Magical;
+﻿namespace IcWaRotations.Magical;
 
 [RotationDesc(ActionID.SearingLight)]
 [LinkDescription("https://github.com/IncognitoWater/IncognitoWaterRotations/blob/main/Magical/Smn_Rota.cs")]
@@ -15,23 +13,23 @@ public sealed class SmnRotation : SMN_Base
 	public override CombatType Type => CombatType.Both;
 
 	protected override IRotationConfigSet CreateConfiguration() => base.CreateConfiguration()
-		.SetCombo(CombatType.PvE,"addSwiftcast", 0, "Use Swiftcast With", "No", "Emerald", "Ruby", "All")
-		.SetCombo(CombatType.PvE,"SummonOrder", 0, "Invocation Order", "Topaz-Emerald-Ruby", "Topaz-Ruby-Emerald", "Emerald-Topaz-Ruby")
-		.SetBool(CombatType.PvE,"addCrimsonCyclone", true, "Use Crimson Cyclone")
-		.SetBool(CombatType.PvE,"RadiantOnCooldown", false, "Use Radiant On Cooldown")
-		.SetBool(CombatType.PvE,"OrbWalkerAdjust",false,"Turn it on to be able to use Orbwalker with this rotation")
-		.SetBool(CombatType.PvP,"UseBahamutPvP",false,"Use Bahamut in PvP")
-		.SetBool(CombatType.PvP,"UsePhoenixPvP",false,"Use Phoenix in PvP")
-		.SetBool(CombatType.PvP,"CrimsonCycloneInPvP", false, "Use CrimsonCyclone in PvP")
-		.SetBool(CombatType.PvP,"GuardCancel",false,"Turn on if you want to FORCE RS to use nothing while enemy is in guard in PvP")
+		.SetCombo(CombatType.PvE, "addSwiftcast", 0, "Use Swiftcast With", "No", "Emerald", "Ruby", "All")
+		.SetCombo(CombatType.PvE, "SummonOrder", 0, "Invocation Order", "Topaz-Emerald-Ruby", "Topaz-Ruby-Emerald", "Emerald-Topaz-Ruby")
+		.SetBool(CombatType.PvE, "addCrimsonCyclone", true, "Use Crimson Cyclone")
+		.SetBool(CombatType.PvE, "RadiantOnCooldown", false, "Use Radiant On Cooldown")
+		.SetBool(CombatType.PvE, "OrbWalkerAdjust", false, "Turn it on to be able to use Orbwalker with this rotation")
+		.SetBool(CombatType.PvP, "UseBahamutPvP", false, "Use Bahamut in PvP")
+		.SetBool(CombatType.PvP, "UsePhoenixPvP", false, "Use Phoenix in PvP")
+		.SetBool(CombatType.PvP, "CrimsonCycloneInPvP", false, "Use CrimsonCyclone in PvP")
+		.SetBool(CombatType.PvP, "GuardCancel", false, "Turn on if you want to FORCE RS to use nothing while enemy is in guard in PvP")
 		.SetBool(CombatType.PvP, "CrimsonSpecial", false, "Turn on if you want Crimson in PvP to be executed only if the enemys has less life than the next setting \n (Need CrimsonCyclonPvpTurnedOn)")
-		.SetInt(CombatType.PvP, "CrimsonSpecialValue", 20000, "How much HP does the enemy have for crimson to be done",1,100000);
+		.SetInt(CombatType.PvP, "CrimsonSpecialValue", 20000, "How much HP does the enemy have for crimson to be done", 1, 100000);
 
 	private float GetPlayerHealthPercent()
 	{
 		return (Player.CurrentHp / Player.MaxHp) * 100;
 	}
-	
+
 	public override bool CanHealSingleSpell => false;
 
 	[RotationDesc(ActionID.CrimsonCyclone)]
@@ -45,6 +43,7 @@ public sealed class SmnRotation : SMN_Base
 	protected override bool GeneralGCD(out IAction act)
 	{
 		act = null;
+
 		#region PvP
 		if (Configs.GetBool("GuardCancel") && Player.HasStatus(true, StatusID.PvP_Guard)) return false;
 		if (Player.HasStatus(true, StatusID.PvP_DreadwyrmTrance))
@@ -55,25 +54,25 @@ public sealed class SmnRotation : SMN_Base
 		{
 			if (PvP_FountainOfFire.CanUse(out act, CanUseOption.MustUse)) return true;
 		}
-		if(Configs.GetBool("CrimsonCycloneInPvP") && (Configs.GetBool("CrimsonSpecial")))
+		if (Configs.GetBool("CrimsonCycloneInPvP") && (Configs.GetBool("CrimsonSpecial")))
 		{
 			if ((HostileTarget && HostileTarget.CurrentHp < Configs.GetInt("CrimsonSpecialValue"))
-				&& PvP_CrimsonCyclone.CanUse(out act,CanUseOption.MustUse)) return true;
+				&& PvP_CrimsonCyclone.CanUse(out act, CanUseOption.MustUse)) return true;
 		}
-		if(Configs.GetBool("CrimsonCycloneInPvP") && !(Configs.GetBool("CrimsonSpecial")))
+		if (Configs.GetBool("CrimsonCycloneInPvP") && !(Configs.GetBool("CrimsonSpecial")))
 		{
-			if (PvP_CrimsonCyclone.CanUse(out act,CanUseOption.MustUse)) return true;
+			if (PvP_CrimsonCyclone.CanUse(out act, CanUseOption.MustUse)) return true;
 		}
-		if (IsLastGCD(ActionID.PvP_CrimsonCyclone) && PvP_CrimsonStrike.CanUse(out act,CanUseOption.MustUse)) return true;
-		if (PvP_Slipstream.CanUse(out act,CanUseOption.MustUse)) return true;
-		if (PvP_Ruin3.CanUse(out act,CanUseOption.MustUse)) return true;
+		if (IsLastGCD(ActionID.PvP_CrimsonCyclone) && PvP_CrimsonStrike.CanUse(out act, CanUseOption.MustUse)) return true;
+		if (PvP_Slipstream.CanUse(out act, CanUseOption.MustUse)) return true;
+		if (PvP_Ruin3.CanUse(out act, CanUseOption.MustUse)) return true;
 		#endregion
 
 		#region PvE
 		//Spawning carbuncle + attempting to avoid unwanted try of spawning carbuncle
 		if (Configs.GetBool("OrbWalkerAdjust"))
 		{
-			if (!InBahamut && !InPhoenix && !InGaruda && !InIfrit && !InTitan && SummonCarbuncle.CanUse(out act,CanUseOption.IgnoreCastCheck)) return true;
+			if (!InBahamut && !InPhoenix && !InGaruda && !InIfrit && !InTitan && SummonCarbuncle.CanUse(out act, CanUseOption.IgnoreCastCheck)) return true;
 		}
 		else
 		{
@@ -89,7 +88,7 @@ public sealed class SmnRotation : SMN_Base
 		{
 			if (Slipstream.CanUse(out act, CanUseOption.MustUse)) return true;
 		}
-		
+
 		//Crimson strike 
 		if (CrimsonStrike.CanUse(out act, CanUseOption.MustUse)) return true;
 
@@ -104,7 +103,7 @@ public sealed class SmnRotation : SMN_Base
 		{
 			if (Gemshine.CanUse(out act)) return true;
 		}
-		
+
 		if (Configs.GetBool("addCrimsonCyclone") && CrimsonCyclone.CanUse(out act, CanUseOption.MustUse)) return true;
 
 		//Summon Baha or Phoenix
@@ -152,7 +151,7 @@ public sealed class SmnRotation : SMN_Base
 		//Outburst
 		if (Configs.GetBool("OrbWalkerAdjust"))
 		{
-			if (Outburst.CanUse(out act,CanUseOption.IgnoreCastCheck)) return true;
+			if (Outburst.CanUse(out act, CanUseOption.IgnoreCastCheck)) return true;
 		}
 		else
 		{
@@ -162,7 +161,7 @@ public sealed class SmnRotation : SMN_Base
 		//Any ruin ( 1-2-3 ) 
 		if (Configs.GetBool("OrbWalkerAdjust"))
 		{
-			if (Ruin.CanUse(out act,CanUseOption.IgnoreCastCheck)) return true;
+			if (Ruin.CanUse(out act, CanUseOption.IgnoreCastCheck)) return true;
 		}
 		else
 		{
@@ -209,11 +208,11 @@ public sealed class SmnRotation : SMN_Base
 	protected override bool EmergencyAbility(IAction nextGCD, out IAction act)
 	{
 		act = null;
+
 		#region PvP
-		
 		if (Configs.GetBool("GuardCancel") && Player.HasStatus(true, StatusID.PvP_Guard)) return false;
-		
-		if (GetPlayerHealthPercent() < 50 && PvP_RadiantAegis.CanUse(out act,CanUseOption.MustUse)) return true;
+
+		if (GetPlayerHealthPercent() < 50 && PvP_RadiantAegis.CanUse(out act, CanUseOption.MustUse)) return true;
 		if (Configs.GetBool("UseBahamutPvP") && PvP_SummonBahamut.CanUse(out act, CanUseOption.MustUse)) return true;
 		if (Configs.GetBool("UsePhoenixPvP") && PvP_SummonPhoenix.CanUse(out act, CanUseOption.MustUse)) return true;
 		if (Player.HasStatus(true, StatusID.PvP_DreadwyrmTrance))
@@ -224,9 +223,8 @@ public sealed class SmnRotation : SMN_Base
 		{
 			if (PvP_EnkindlePhoenix.CanUse(out act, CanUseOption.MustUse)) return true;
 		}
-		if (PvP_MountainBuster.CanUse(out act,CanUseOption.MustUse)) return true;
+		if (PvP_MountainBuster.CanUse(out act, CanUseOption.MustUse)) return true;
 		if (PvP_Fester.CanUse(out act, CanUseOption.MustUseEmpty)) return true;
-
 		#endregion
 
 		#region PvE
