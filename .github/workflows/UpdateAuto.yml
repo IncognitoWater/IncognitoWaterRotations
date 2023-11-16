@@ -1,16 +1,27 @@
-# Name of the workflow
-name: Release
-
-# Run on every commit tag which begins with "v" (e.g., "vX.X.X.X")
 on:
   push:
-    tags:
-      - "v*"
+    branches:
+      - release
 
-# Automatically create a GitHub Release, with release details specified (the relevant commits)
+name: release-please
 jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    outputs:
+      released: ${{ steps.rp.outputs.releases_created }}
+      upload_url: ${{ steps.rp.outputs.upload_url }}
+    steps:
+      - id: rp
+        uses: google-github-actions/release-please-action@v3
+        with:
+          release-type: node
+          package-name: release-please-action
+          default-branch: release
+
   build:
+    if: ${{ needs.release-please.outputs.released }}
     name: build
+    needs: release-please
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
@@ -36,11 +47,11 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           path: |
-            .\build\net7.0-windows\
-  
+            .\Build\net7.0-windows\
+
   release:
     name: release
-    needs: [ build ]
+    needs: [build, release-please]
     runs-on: ubuntu-latest
     
     steps:
@@ -52,22 +63,22 @@ jobs:
       - name: Display structure of downloaded files
         run: ls -R
 
-      - name: Upload IcWa dll
+      - name: Upload IcWaRotations dll
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ github.event.release.upload_url }}
+          upload_url: ${{ needs.release-please.outputs.upload_url }}
           asset_path: artifact/IcWaRotations.dll
           asset_name: IcWaRotations.dll
           asset_content_type: application/x-msdownload
 
-      - name: Upload IcWa pdb
+      - name: Upload IcWaRotations pdb
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ github.event.release.upload_url }}
+          upload_url: ${{ needs.release-please.outputs.upload_url }}
           asset_path: artifact/IcWaRotations.pdb
           asset_name: IcWaRotations.pdb
           asset_content_type: application/octet-stream
