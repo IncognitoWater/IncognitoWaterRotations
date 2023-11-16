@@ -1,11 +1,11 @@
 # Name of the workflow
 name: Release
 
-# Run on every commit tag which begins with "chore" (e.g., "chore: released X.X.X.X")
+# Run on every commit tag which begins with "v" (e.g., "vX.X.X.X")
 on:
   push:
     tags:
-      - "chore*"
+      - "v*"
 
 # Automatically create a GitHub Release, with release details specified (the relevant commits)
 jobs:
