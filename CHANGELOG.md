@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/IncognitoWater/IncognitoWaterRotations/compare/v1.0.0...v1.0.1) (2023-11-16)
+
+
+### Bug Fixes
+
+* Added PvP_BRD ([cf53edc](https://github.com/IncognitoWater/IncognitoWaterRotations/commit/cf53edc8be4e102db136ab3296f651c195ead7ff))
+
 ## 1.0.0 (2023-11-16)
 
 
