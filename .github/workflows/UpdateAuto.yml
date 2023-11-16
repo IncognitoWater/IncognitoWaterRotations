@@ -10,9 +10,7 @@ on:
 # Automatically create a GitHub Release, with release details specified (the relevant commits)
 jobs:
   build:
-    if: ${{ needs.release-please.outputs.released }}
     name: build
-    needs: release-please
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
