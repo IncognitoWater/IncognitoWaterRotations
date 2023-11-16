@@ -25,7 +25,9 @@ public sealed class MchRotation : MCH_Base
 
 
 	protected override IRotationConfigSet CreateConfiguration() => base.CreateConfiguration()
-		.SetBool(CombatType.PvE, "MCH_Reassemble", true, "Use Reassamble with ChainSaw");
+		.SetBool(CombatType.PvE, "MCH_Reassemble", true, "Use Reassamble with ChainSaw")
+		.SetBool(CombatType.PvP,"LBInPvP", true, "Use the LB in PvP when Target is killable by it")
+		.SetBool(CombatType.PvP,"GuardCancel",false,"Turn on if you want to FORCE RS to use nothing while in guard in PvP");
 
 	protected override bool GeneralGCD(out IAction act)
 	{
