@@ -145,7 +145,7 @@ public sealed class SmnRotation : SMN_Base
 			if (SummonRuby.CanUse(out act)) return true;
 			break;
 		}
-		if (SummonTimeEndAfterGCD() && AttunmentTimeEndAfterGCD() &&
+		if (SummonTimeEndAfterGCD() && AttunmentTimeEndAfterGCD() && SummonBahamut.ElapsedAfter(20) &&
 			!Player.HasStatus(true, StatusID.SwiftCast) && !InBahamut && !InPhoenix && !InGaruda && !InTitan &&
 			RuinIV.CanUse(out act, CanUseOption.MustUse)) return true;
 		//Outburst
