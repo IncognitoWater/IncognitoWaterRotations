@@ -1,6 +1,4 @@
-﻿using Dalamud.Game.ClientState.Objects.SubKinds;
-
-namespace IcWaRotations.Melee
+﻿namespace IcWaRotations.Melee
 {
 	[BetaRotation]
 	[RotationDesc(ActionID.Brotherhood)]
@@ -34,7 +32,6 @@ namespace IcWaRotations.Melee
 				if (PvP_Meteodrive.CanUse(out act, CanUseOption.MustUse)) return true;
 				if (PvP_Risingphoenix.CanUse(out act, CanUseOption.MustUse)) return true;
 				if (PvP_Phantomrush.CanUse(out act, CanUseOption.MustUse)) return true;
- 				
 			}
 
 			if (PvP_Sixsidedstar.CanUse(out act, CanUseOption.MustUse)) return true;

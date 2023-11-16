@@ -46,7 +46,7 @@ namespace IcWaRotations.Melee
 		/// <summary>
 		/// 
 		/// </summary>
-		public static IBaseAction PvP_Hyosetsu { get; } = new BaseAction(ActionID.PvP_Hyosetsu,ActionOption.Buff)
+		public static IBaseAction PvP_Hyosetsu { get; } = new BaseAction(ActionID.PvP_Hyosetsu, ActionOption.Buff)
 		{
 			StatusNeed = new StatusID[] { StatusID.PvP_Kaiten },
 		};

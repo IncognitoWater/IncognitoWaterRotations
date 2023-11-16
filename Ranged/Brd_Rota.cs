@@ -1,13 +1,11 @@
-﻿using Dalamud.Game.ClientState.Objects.SubKinds;
-
-namespace IcWaRotations.Ranged
+﻿namespace IcWaRotations.Ranged
 {
 	[BetaRotation]
 	[RotationDesc(ActionID.Wildfire)]
 	public class BrdRotation : BRD_Base
 	{
-		
-        public override string GameVersion => "6.51";
+
+		public override string GameVersion => "6.51";
 		public override string RotationName => "Incognito BRD";
 		public override string Description => "PvP Rotation for BRD";
 		public override CombatType Type => CombatType.PvP;
@@ -20,7 +18,6 @@ namespace IcWaRotations.Ranged
 //			.SetBool(CombatType.PvP, "ThunderclapPvP", true, "Use Thunderclap")
 //			.SetInt(CombatType.PvP, "SCValue", 30000, "How much HP does the enemy have for Thunderclap to be done", 1, 100000)
 //			.SetBool(CombatType.PvP, "GuardCancel", false, "Turn on if you want to FORCE RS to use nothing while ENEMIES in guard in PvP");
-
 
 
 		protected override bool GeneralGCD(out IAction act)

@@ -1,6 +1,4 @@
-﻿using Dalamud.Game.ClientState.Objects.SubKinds;
-
-namespace IcWaRotations.Magical
+﻿namespace IcWaRotations.Magical
 {
 	[BetaRotation]
 	[RotationDesc(ActionID.Manaward)]
@@ -27,19 +25,19 @@ namespace IcWaRotations.Magical
 			#region PvP
 			if (Configs.GetBool("GuardCancel") && Player.HasStatus(true, StatusID.PvP_Guard)) return false;
 
-			if (Configs.GetBool("LBInPvP") && HostileTarget && HostileTarget.CurrentHp < Configs.GetInt("SRValue") && PvP_SoulResonance.IsEnabled )
+			if (Configs.GetBool("LBInPvP") && HostileTarget && HostileTarget.CurrentHp < Configs.GetInt("SRValue") && PvP_SoulResonance.IsEnabled)
 			{
 				if (PvP_SoulResonance.CanUse(out act, CanUseOption.MustUse)) return true;
 
 				if (PvP_Superflare.CanUse(out act, CanUseOption.MustUse)) return true;
-                if (PvP_Foul.CanUse(out act, CanUseOption.MustUse)) return true;
-                if (PvP_AetherialManipulation.CanUse(out act, CanUseOption.MustUse)) return true;
+				if (PvP_Foul.CanUse(out act, CanUseOption.MustUse)) return true;
+				if (PvP_AetherialManipulation.CanUse(out act, CanUseOption.MustUse)) return true;
 				if (PvP_Burst.CanUse(out act, CanUseOption.MustUse)) return true;
 				if (PvP_Paradox.CanUse(out act, CanUseOption.MustUse)) return true;
 
 //    			if (PvP_Freeze.CanUse(out act, CanUseOption.MustUse) && Player.HasStatus(true, StatusID.PvP_UmbralIce3)) return true;
 //	    		if (PvP_Blizzard4.CanUse(out act, CanUseOption.MustUse) && Player.HasStatus(true, StatusID.PvP_UmbralIce2)) return true;
-			    if (PvP_Blizzard.CanUse(out act, CanUseOption.MustUse)) return true;
+				if (PvP_Blizzard.CanUse(out act, CanUseOption.MustUse)) return true;
 			}
 
 			if (PvP_AetherialManipulation.CanUse(out act, CanUseOption.MustUse) && HostileTarget && HostileTarget.CurrentHp < Configs.GetInt("AMValue")) return true;
